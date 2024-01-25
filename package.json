@@ -1,5 +1,5 @@
 {
-  "name": "statis-cost",
+  "name": "kino-app",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -16,15 +16,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vidga1/Statis-Cost.git"
+    "url": "git+https://github.com/Vidga1/Kino-App.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Vidga1/Statis-Cost/issues"
+    "url": "https://github.com/Vidga1/Kino-App/issues"
   },
-  "homepage": "https://github.com/Vidga1/Statis-Cost#readme",
+  "homepage": "https://github.com/Vidga1/Kino-App#readme",
   "devDependencies": {
     "@babel/core": "^7.23.7",
     "@babel/preset-env": "^7.23.8",
