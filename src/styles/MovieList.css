@@ -1,0 +1,67 @@
+.movies {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 0 auto;
+  background: linear-gradient(to right, #ba8b02, #181818);
+  padding: 20px;
+}
+
+.movie {
+  width: 270px;
+  margin: 40px;
+  background-color: #1a191f;
+  color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.movie__cover-inner {
+  height: 350px;
+  overflow: hidden;
+}
+
+.movie__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie__info {
+  padding: 10px;
+  text-align: center;
+}
+
+.movie__title {
+  font-size: 23px;
+  color: fuchsia;
+  cursor: pointer;
+}
+
+.movie__details {
+  color: aqua;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.movie__category {
+  color: green;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.movie__average {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  color: #1a191f;
+  font-size: 14px;
+}
