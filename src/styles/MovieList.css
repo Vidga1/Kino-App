@@ -65,3 +65,23 @@
   color: #1a191f;
   font-size: 14px;
 }
+
+.movie__average--green {
+  background-color: green;
+  color: #ffffff;
+}
+
+.movie__average--orange {
+  background-color: orange;
+  color: #ffffff;
+}
+
+.movie__average--red {
+  background-color: red;
+  color: #ffffff;
+}
+
+.movie__average--blue {
+  background-color: blue;
+  color: #ffffff;
+}

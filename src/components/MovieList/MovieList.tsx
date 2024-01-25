@@ -1,6 +1,27 @@
 import React from 'react';
 import '../../styles/MovieList.css';
 
+const getClassByRate = (rating: number | string) => {
+  const numericRating =
+    typeof rating === 'string' && !rating.endsWith('%')
+      ? parseFloat(rating)
+      : rating;
+
+  if (typeof numericRating === 'number') {
+    if (numericRating >= 7) {
+      return 'green';
+    } else if (numericRating > 5) {
+      return 'orange';
+    } else {
+      return 'red';
+    }
+  } else if (typeof rating === 'string' && rating.endsWith('%')) {
+    return 'blue';
+  }
+
+  return 'default';
+};
+
 const MovieList: React.FC<MovieListProps> = ({ movies }) => {
   return (
     <div className="movies">
@@ -22,7 +43,11 @@ const MovieList: React.FC<MovieListProps> = ({ movies }) => {
               {movie.genres.map((g) => g.genre).join(', ')}
             </div>
           </div>
-          <div className="movie__average">{movie.rating}</div>
+          <div
+            className={`movie__average movie__average--${getClassByRate(movie.rating)}`}
+          >
+            {movie.rating}
+          </div>
         </div>
       ))}
     </div>

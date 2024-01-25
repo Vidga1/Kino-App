@@ -1,19 +1,22 @@
+interface Country {
+  country: string;
+}
+
+interface Genre {
+  genre: string;
+}
+
 interface Movie {
   kinopoiskId: number;
   filmId?: number;
   nameRu: string;
   posterUrlPreview: string;
   year: string;
-  countries: Array<{ country: string }>;
-  genres: Array<{ genre: string }>;
-  rating: string | number;
+  countries: Country[];
+  genres: Genre[];
+  rating: number; // Убедитесь, что rating указан как number
 }
 
 interface MovieListProps {
   movies: Movie[];
-}
-
-interface MoviesData {
-  films: Movie[];
-  totalPages: number;
 }
