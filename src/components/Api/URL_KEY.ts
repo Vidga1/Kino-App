@@ -7,3 +7,6 @@ export const API_URL_MOVIE_DETAILS =
 
 export const API_URL_FILTER =
   'https://kinopoiskapiunofficial.tech/api/v2.2/films';
+
+export const API_URL_SEARCH =
+  'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword=';

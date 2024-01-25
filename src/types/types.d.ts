@@ -64,3 +64,11 @@ interface FilterOptions {
   countries: Country[];
   genres: Genre[];
 }
+
+interface HeaderProps {
+  onSearch: (isActive: boolean) => void;
+}
+
+interface SearchFilterFormProps {
+  onSearch: (isActive: boolean) => void;
+}

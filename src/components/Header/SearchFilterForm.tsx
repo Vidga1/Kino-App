@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { loadFilterOptions } from '../Api/loadFilter';
+import { fetchMoviesByTitle } from '../Api/searchMovies';
 
 const SearchFilterForm: React.FC = () => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     const loadFilters = async () => {
@@ -27,9 +29,26 @@ const SearchFilterForm: React.FC = () => {
     loadFilters();
   }, []);
 
+  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const searchInputElement = document.getElementById(
+      'search',
+    ) as HTMLInputElement | null;
+
+    if (searchInputElement) {
+      const searchInputValue = searchInputElement.value;
+      try {
+        const results = await fetchMoviesByTitle(searchInputValue);
+        setSearchResults(results.films);
+      } catch (error) {
+        console.error('Ошибка при поиске:', error);
+      }
+    }
+  };
+
   return (
     <div className="search-container">
-      <form id="filterSearchForm">
+      <form id="filterSearchForm" onSubmit={handleSearch}>
         <select id="countrySelect" name="countrySelect" className="filter">
           <option value="" disabled selected hidden>
             Выберите страну
