@@ -5,16 +5,25 @@ const API_URL_POPULAR =
 const API_URL_MOVIE_DETAILS =
   'https://kinopoiskapiunofficial.tech/api/v2.2/films/';
 
-export const fetchMovies = async (): Promise<Movie[]> => {
-  const response = await fetch(API_URL_POPULAR, {
+export const fetchMovies = async (
+  page: number = 1,
+): Promise<MoviesResponse> => {
+  const url = `${API_URL_POPULAR}&page=${page}`;
+  const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
       'X-API-KEY': API_KEY,
     },
   });
+  if (!response.ok) {
+    throw new Error(`Ошибка HTTP: ${response.status}`);
+  }
   const data = await response.json();
   console.log('Полученные фильмы:', data.films);
-  return data.films;
+  return {
+    films: data.films,
+    pagesCount: data.pagesCount,
+  };
 };
 
 export const fetchMovieDetails = async (

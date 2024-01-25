@@ -3,17 +3,21 @@ import Header from '../components/Header/Header';
 import MovieList from '../components/MovieList/MovieList';
 import Modal from '../components/Modal/Modal';
 import { fetchMovies, fetchMovieDetails } from '../components/Api/fetchMovies';
+import Pagination from '../components/Pagination/Pagination';
 
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<MovieDetails | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const loadMovies = async () => {
       try {
-        const moviesData = await fetchMovies();
-        setMovies(moviesData.slice(0, 20));
+        const moviesResponse = await fetchMovies();
+        setMovies(moviesResponse.films);
+        setTotalPages(moviesResponse.pagesCount);
       } catch (error) {
         console.error('Ошибка при загрузке фильмов:', error);
       }
@@ -34,6 +38,20 @@ const HomePage: React.FC = () => {
       document.body.classList.remove('stop-scrolling');
     };
   }, [isModalOpen]);
+
+  useEffect(() => {
+    const loadMovies = async () => {
+      try {
+        const moviesResponse = await fetchMovies(currentPage);
+        setMovies(moviesResponse.films); // Здесь прямой доступ к массиву фильмов
+        setTotalPages(moviesResponse.pagesCount); // Установка общего кол-ва страниц
+      } catch (error) {
+        console.error('Ошибка при загрузке фильмов:', error);
+      }
+    };
+
+    loadMovies();
+  }, [currentPage]);
 
   const handleMovieSelect = async (movie: Movie) => {
     console.log('Выбран фильм:', movie);
@@ -68,6 +86,11 @@ const HomePage: React.FC = () => {
           isModalOpen={isModalOpen}
         />
       )}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={(page) => setCurrentPage(page)}
+      />
     </div>
   );
 };

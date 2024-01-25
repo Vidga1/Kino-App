@@ -34,3 +34,14 @@ interface ModalProps {
   onClose: () => void;
   isModalOpen: boolean;
 }
+
+interface PaginationProps {
+  totalPages: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}
+
+interface MoviesResponse {
+  films: Movie[];
+  pagesCount: number;
+}
