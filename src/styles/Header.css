@@ -45,3 +45,7 @@
 .search-container button:hover {
   background-color: #0056b3;
 }
+
+.search-container input[type='number'].smaller-input {
+  max-width: 95px;
+}

@@ -16,10 +16,7 @@ const Modal: React.FC<ModalProps> = ({ movie, onClose, isModalOpen }) => {
         </h2>
         <ul className="modal__movie-info">
           <li className="modal__movie-genre">
-            Жанр -{' '}
-            {movie.genres.map((el) => (
-              <span key={el.genre}>{el.genre}</span>
-            ))}
+            Жанр - {movie.genres.map((el) => el.genre).join(', ')}
           </li>
           {movie.filmLength && (
             <li className="modal__movie-runtime">

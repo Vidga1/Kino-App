@@ -1,8 +1,10 @@
 interface Country {
+  id: string;
   country: string;
 }
 
 interface Genre {
+  id: string;
   genre: string;
 }
 
@@ -44,4 +46,21 @@ interface PaginationProps {
 interface MoviesResponse {
   films: Movie[];
   pagesCount: number;
+}
+
+interface SearchParams {
+  keyword?: string;
+  countries?: string;
+  genres?: string;
+  order?: string;
+  type?: string;
+  ratingFrom?: string;
+  ratingTo?: string;
+  yearFrom?: string;
+  yearTo?: string;
+}
+
+interface FilterOptions {
+  countries: Country[];
+  genres: Genre[];
 }

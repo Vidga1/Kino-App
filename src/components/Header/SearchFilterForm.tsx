@@ -1,23 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { loadFilterOptions } from '../Api/loadFilter';
 
 const SearchFilterForm: React.FC = () => {
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [genres, setGenres] = useState<Genre[]>([]);
+
+  useEffect(() => {
+    const loadFilters = async () => {
+      const data: FilterOptions = await loadFilterOptions();
+      if (data) {
+        const sortedCountries = data.countries
+          .filter((country: Country) => country.country.trim() !== '')
+          .sort((a: Country, b: Country) =>
+            a.country.localeCompare(b.country, 'ru'),
+          );
+
+        const sortedGenres = data.genres
+          .filter((genre: Genre) => genre.genre.trim() !== '')
+          .sort((a: Genre, b: Genre) => a.genre.localeCompare(b.genre, 'ru'));
+
+        setCountries(sortedCountries);
+        setGenres(sortedGenres);
+      }
+    };
+
+    loadFilters();
+  }, []);
+
   return (
     <div className="search-container">
       <form id="filterSearchForm">
-        <select id="countrySelect" className="filter" defaultValue="">
-          <option value="" className="empty-filter" disabled hidden>
-            Страна
+        <select id="countrySelect" name="countrySelect" className="filter">
+          <option value="" disabled selected hidden>
+            Выберите страну
           </option>
+          {countries.map((country) => (
+            <option key={country.id} value={country.id}>
+              {country.country}
+            </option>
+          ))}
         </select>
 
-        <select id="genreSelect" className="filter" defaultValue="">
-          <option value="" className="empty-filter" disabled hidden>
-            Жанр
+        <select id="genreSelect" name="genreSelect" className="filter">
+          <option value="" disabled selected hidden>
+            Выберите жанр
           </option>
+          {genres.map((genre) => (
+            <option key={genre.id} value={genre.id}>
+              {genre.genre}
+            </option>
+          ))}
         </select>
 
-        <select id="orderSelect" className="filter" defaultValue="">
-          <option value="" className="empty-filter" disabled hidden>
+        <select id="orderSelect" name="orderSelect" className="filter">
+          <option value="" disabled hidden>
             Сортировка
           </option>
           <option value="RATING">По рейтингу</option>
@@ -25,8 +61,8 @@ const SearchFilterForm: React.FC = () => {
           <option value="YEAR">По годам</option>
         </select>
 
-        <select id="typeSelect" className="filter" defaultValue="">
-          <option value="" className="empty-filter" disabled hidden>
+        <select id="typeSelect" name="typeSelect" className="filter">
+          <option value="" disabled hidden>
             Тип
           </option>
           <option value="ALL">Все</option>
@@ -39,27 +75,38 @@ const SearchFilterForm: React.FC = () => {
         <input
           type="number"
           id="ratingFrom"
-          className="filter"
+          name="ratingFrom"
+          className="filter smaller-input"
           placeholder="Рейтинг от"
         />
         <input
           type="number"
           id="ratingTo"
-          className="filter"
+          name="ratingTo"
+          className="filter smaller-input"
           placeholder="Рейтинг до"
         />
 
         <input
           type="number"
           id="yearFrom"
-          className="filter"
+          name="yearFrom"
+          className="filter smaller-input"
           placeholder="Год от"
         />
         <input
           type="number"
           id="yearTo"
-          className="filter"
+          name="yearTo"
+          className="filter smaller-input"
           placeholder="Год до"
+        />
+        <input
+          type="text"
+          id="search"
+          name="search"
+          className="filter smaller-input"
+          placeholder="Введите слово"
         />
 
         <button type="submit">Поиск</button>
@@ -67,5 +114,4 @@ const SearchFilterForm: React.FC = () => {
     </div>
   );
 };
-
 export default SearchFilterForm;
