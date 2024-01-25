@@ -4,20 +4,20 @@ const SearchFilterForm: React.FC = () => {
   return (
     <div className="search-container">
       <form id="filterSearchForm">
-        <select id="countrySelect" className="filter">
-          <option value="" className="empty-filter" disabled selected hidden>
+        <select id="countrySelect" className="filter" defaultValue="">
+          <option value="" className="empty-filter" disabled hidden>
             Страна
           </option>
         </select>
 
-        <select id="genreSelect" className="filter">
-          <option value="" className="empty-filter" disabled selected hidden>
+        <select id="genreSelect" className="filter" defaultValue="">
+          <option value="" className="empty-filter" disabled hidden>
             Жанр
           </option>
         </select>
 
-        <select id="orderSelect" className="filter">
-          <option value="" className="empty-filter" disabled selected hidden>
+        <select id="orderSelect" className="filter" defaultValue="">
+          <option value="" className="empty-filter" disabled hidden>
             Сортировка
           </option>
           <option value="RATING">По рейтингу</option>
@@ -25,8 +25,8 @@ const SearchFilterForm: React.FC = () => {
           <option value="YEAR">По годам</option>
         </select>
 
-        <select id="typeSelect" className="filter">
-          <option value="" className="empty-filter" disabled selected hidden>
+        <select id="typeSelect" className="filter" defaultValue="">
+          <option value="" className="empty-filter" disabled hidden>
             Тип
           </option>
           <option value="ALL">Все</option>

@@ -18,11 +18,10 @@ const getClassByRate = (rating: number | string) => {
   } else if (typeof rating === 'string' && rating.endsWith('%')) {
     return 'blue';
   }
-
   return 'default';
 };
 
-const MovieList: React.FC<MovieListProps> = ({ movies }) => {
+const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
   return (
     <div className="movies">
       {movies.map((movie) => (
@@ -35,7 +34,9 @@ const MovieList: React.FC<MovieListProps> = ({ movies }) => {
             />
           </div>
           <div className="movie__info">
-            <div className="movie__title">{movie.nameRu}</div>
+            <div className="movie__title" onClick={() => onMovieSelect(movie)}>
+              {movie.nameRu}
+            </div>
             <div className="movie__details">
               {movie.countries.map((c) => c.country).join(', ')} - {movie.year}
             </div>
