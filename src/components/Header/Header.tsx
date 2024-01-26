@@ -8,7 +8,7 @@ const Header: React.FC = () => {
     <header className="header">
       <div className="header__content">
         <Link to="/" className="header__logo">
-          KinoApp
+          На главную
         </Link>
       </div>
       <div className="header__content">
@@ -16,7 +16,6 @@ const Header: React.FC = () => {
           Список моих фильмов
         </Link>
       </div>
-      <SearchFilterForm />
     </header>
   );
 };

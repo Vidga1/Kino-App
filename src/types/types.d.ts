@@ -70,5 +70,5 @@ interface HeaderProps {
 }
 
 interface SearchFilterFormProps {
-  onSearch: (isActive: boolean) => void;
+  onSearchResults: (movies: Movie[]) => void;
 }

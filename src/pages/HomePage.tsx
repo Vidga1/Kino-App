@@ -4,6 +4,7 @@ import MovieList from '../components/MovieList/MovieList';
 import Modal from '../components/Modal/Modal';
 import { fetchMovies, fetchMovieDetails } from '../components/Api/fetchMovies';
 import Pagination from '../components/Pagination/Pagination';
+import SearchFilterForm from '../components/Header/SearchFilterForm';
 
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -11,6 +12,12 @@ const HomePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+
+  const handleSearchResults = (newMovies: Movie[]) => {
+    setMovies(newMovies);
+    setCurrentPage(1);
+    setTotalPages(0);
+  };
 
   useEffect(() => {
     const loadMovies = async () => {
@@ -78,6 +85,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <Header />
+      <SearchFilterForm onSearchResults={handleSearchResults} />
       <MovieList movies={movies} onMovieSelect={handleMovieSelect} />
       {isModalOpen && selectedMovie && (
         <Modal

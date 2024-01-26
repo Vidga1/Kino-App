@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { loadFilterOptions } from '../Api/loadFilter';
 import { fetchMoviesByTitle } from '../Api/searchMovies';
 
-const SearchFilterForm: React.FC = () => {
+const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
+  onSearchResults,
+}) => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const loadFilters = async () => {
@@ -31,18 +34,11 @@ const SearchFilterForm: React.FC = () => {
 
   const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const searchInputElement = document.getElementById(
-      'search',
-    ) as HTMLInputElement | null;
-
-    if (searchInputElement) {
-      const searchInputValue = searchInputElement.value;
-      try {
-        const results = await fetchMoviesByTitle(searchInputValue);
-        setSearchResults(results.films);
-      } catch (error) {
-        console.error('Ошибка при поиске:', error);
-      }
+    try {
+      const results = await fetchMoviesByTitle(searchTerm);
+      onSearchResults(results.films);
+    } catch (error) {
+      console.error('Ошибка при поиске:', error);
     }
   };
 
@@ -122,12 +118,10 @@ const SearchFilterForm: React.FC = () => {
         />
         <input
           type="text"
-          id="search"
-          name="search"
-          className="filter smaller-input"
-          placeholder="Введите слово"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Введите название"
         />
-
         <button type="submit">Поиск</button>
       </form>
     </div>
