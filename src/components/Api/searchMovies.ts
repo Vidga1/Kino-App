@@ -12,9 +12,14 @@ export const fetchMoviesByTitle = async (title: string, page = 1) => {
     throw new Error(`Ошибка HTTP: ${response.status}`);
   }
   const data = await response.json();
+
+  // Ограничение максимального количества страниц
+  const maxPages = 20;
+  const limitedPagesCount = Math.min(data.pagesCount, maxPages);
+
   console.log('Результаты поиска:', data.films);
   return {
     films: data.films,
-    pagesCount: data.pagesCount,
+    pagesCount: limitedPagesCount,
   };
 };

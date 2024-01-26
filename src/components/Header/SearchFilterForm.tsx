@@ -49,6 +49,7 @@ const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
   return (
     <div className="search-container">
       <form id="filterSearchForm" onSubmit={handleSearch}>
+        <button type="submit">Поиск по фильтрам</button>
         <select id="countrySelect" name="countrySelect" className="filter">
           <option value="" disabled selected hidden>
             Выберите страну
@@ -126,7 +127,7 @@ const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Введите название"
         />
-        <button type="submit">Поиск</button>
+        <button type="submit">Поиск по названию</button>
       </form>
     </div>
   );
