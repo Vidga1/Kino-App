@@ -5,6 +5,7 @@ import Modal from '../components/Modal/Modal';
 import { fetchMovies, fetchMovieDetails } from '../components/Api/fetchMovies';
 import Pagination from '../components/Pagination/Pagination';
 import SearchFilterForm from '../components/Header/SearchFilterForm';
+import { fetchMoviesByTitle } from '../components/Api/searchMovies';
 
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -12,11 +13,17 @@ const HomePage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
 
-  const handleSearchResults = (newMovies: Movie[]) => {
+  const handleSearchResults = (
+    newMovies: Movie[],
+    newTotalPages: number,
+    newSearchParams: SearchParams,
+  ) => {
     setMovies(newMovies);
     setCurrentPage(1);
-    setTotalPages(0);
+    setTotalPages(newTotalPages);
+    setSearchParams(newSearchParams); // сохраняем параметры поиска
   };
 
   useEffect(() => {
@@ -48,17 +55,32 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const loadMovies = async () => {
-      try {
-        const moviesResponse = await fetchMovies(currentPage);
-        setMovies(moviesResponse.films); // Здесь прямой доступ к массиву фильмов
-        setTotalPages(moviesResponse.pagesCount); // Установка общего кол-ва страниц
-      } catch (error) {
-        console.error('Ошибка при загрузке фильмов:', error);
+      if (searchParams && searchParams.keyword) {
+        try {
+          // Используйте searchParams для запроса к API
+          const { films, pagesCount } = await fetchMoviesByTitle(
+            searchParams.keyword,
+            currentPage,
+          );
+          setMovies(films);
+          setTotalPages(pagesCount);
+        } catch (error) {
+          console.error('Ошибка при загрузке фильмов:', error);
+        }
+      } else {
+        // Здесь логика для загрузки популярных фильмов или других по умолчанию
+        try {
+          const moviesResponse = await fetchMovies(currentPage);
+          setMovies(moviesResponse.films);
+          setTotalPages(moviesResponse.pagesCount);
+        } catch (error) {
+          console.error('Ошибка при загрузке фильмов:', error);
+        }
       }
     };
 
     loadMovies();
-  }, [currentPage]);
+  }, [currentPage, searchParams]);
 
   const handleMovieSelect = async (movie: Movie) => {
     console.log('Выбран фильм:', movie);

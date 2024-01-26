@@ -35,8 +35,12 @@ const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
   const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const results = await fetchMoviesByTitle(searchTerm);
-      onSearchResults(results.films);
+      const { films, pagesCount } = await fetchMoviesByTitle(searchTerm);
+      const searchParams: SearchParams = {
+        keyword: searchTerm,
+      };
+
+      onSearchResults(films, pagesCount, searchParams);
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }
