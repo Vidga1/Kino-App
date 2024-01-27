@@ -94,13 +94,16 @@ const HomePage: React.FC = () => {
     };
 
     loadMovies();
-  }, [currentPage, searchParams]); // Зависимости useEffect
+  }, [currentPage, searchParams]);
 
   const handleMovieSelect = async (movie: Movie) => {
     console.log('Выбран фильм:', movie);
-    if (movie.filmId) {
+
+    const movieId = movie.kinopoiskId || movie.filmId;
+
+    if (movieId) {
       try {
-        const movieDetails = await fetchMovieDetails(movie.filmId);
+        const movieDetails = await fetchMovieDetails(movieId);
         console.log('Детали фильма:', movieDetails);
         setSelectedMovie(movieDetails);
         setIsModalOpen(true);
@@ -108,7 +111,7 @@ const HomePage: React.FC = () => {
         console.error('Ошибка при загрузке деталей фильма:', error);
       }
     } else {
-      console.error('Ошибка: filmId фильма не найден');
+      console.error('Ошибка: Идентификатор фильма не найден');
     }
   };
 

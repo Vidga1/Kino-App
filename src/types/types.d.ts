@@ -9,6 +9,7 @@ interface Genre {
 }
 
 interface Movie {
+  ratingKinopoisk: number;
   filmId: number;
   kinopoiskId?: number;
   nameRu: string;
@@ -24,6 +25,7 @@ interface MovieDetails extends Movie {
   posterUrl: string;
   filmLength?: number;
   webUrl?: string;
+  ratingKinopoisk?: number;
 }
 
 interface MovieListProps {

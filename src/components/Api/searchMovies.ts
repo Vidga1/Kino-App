@@ -54,6 +54,6 @@ export const fetchMoviesByFilters = async (filters: Filters, page = 1) => {
 
   return {
     films: data.items,
-    pagesCount: data.pagesCount,
+    pagesCount: data.totalPages,
   };
 };
