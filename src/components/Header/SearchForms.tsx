@@ -36,6 +36,7 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
     try {
       const { films, pagesCount } = await fetchMoviesByTitle(searchTerm);
       onSearchResults(films, pagesCount, { keyword: searchTerm });
+      setSearchTerm(''); // Сброс значения searchTerm, чтобы очистить поле ввода
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }
@@ -66,6 +67,42 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }
+  };
+
+  const resetFilters = () => {
+    const countrySelect = document.getElementById(
+      'countrySelect',
+    ) as HTMLSelectElement | null;
+    const genreSelect = document.getElementById(
+      'genreSelect',
+    ) as HTMLSelectElement | null;
+    const orderSelect = document.getElementById(
+      'orderSelect',
+    ) as HTMLSelectElement | null;
+    const typeSelect = document.getElementById(
+      'typeSelect',
+    ) as HTMLSelectElement | null;
+    const ratingFrom = document.getElementById(
+      'ratingFrom',
+    ) as HTMLInputElement | null;
+    const ratingTo = document.getElementById(
+      'ratingTo',
+    ) as HTMLInputElement | null;
+    const yearFrom = document.getElementById(
+      'yearFrom',
+    ) as HTMLInputElement | null;
+    const yearTo = document.getElementById('yearTo') as HTMLInputElement | null;
+
+    if (countrySelect) countrySelect.value = '';
+    if (genreSelect) genreSelect.value = '';
+    if (orderSelect) orderSelect.value = '';
+    if (typeSelect) typeSelect.value = '';
+    if (ratingFrom) ratingFrom.value = '';
+    if (ratingTo) ratingTo.value = '';
+    if (yearFrom) yearFrom.value = '';
+    if (yearTo) yearTo.value = '';
+
+    setSearchTerm('');
   };
 
   return (
@@ -143,6 +180,9 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           placeholder="Год до"
         />
         <button type="submit">Поиск по фильтрам</button>
+        <button type="button" onClick={resetFilters}>
+          Сбросить фильтры
+        </button>
       </form>
       <form onSubmit={handleSearchByName} style={{ marginTop: '10px' }}>
         <input
