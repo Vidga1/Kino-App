@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../styles/MovieList.css';
 
 const getClassByRate = (rating: number | string) => {
@@ -22,14 +22,32 @@ const getClassByRate = (rating: number | string) => {
 };
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
+  const [selectedMovies, setSelectedMovies] = useState<{
+    [key: number]: boolean;
+  }>(() => {
+    return JSON.parse(localStorage.getItem('selectedMovies') || '{}');
+  });
+
   if (!Array.isArray(movies)) {
     return <div>Загрузка фильмов...</div>;
   }
+
+  const toggleMovieSelection = (movieId: number) => {
+    // Указываем тип для movieId
+    setSelectedMovies((prevState: { [key: number]: boolean }) => {
+      // Указываем тип для prevState
+      const newState = { ...prevState, [movieId]: !prevState[movieId] };
+      localStorage.setItem('selectedMovies', JSON.stringify(newState));
+      return newState;
+    });
+  };
 
   return (
     <div className="movies">
       {movies.map((movie) => {
         const rating = movie.ratingKinopoisk || movie.rating || 'Н/Д';
+        const isSelected = selectedMovies[movie.kinopoiskId || movie.filmId];
+        const buttonSymbol = isSelected ? '✔' : '+';
 
         return (
           <div key={movie.kinopoiskId || movie.filmId} className="movie">
@@ -39,6 +57,14 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
                 className="movie__cover"
                 alt={movie.nameRu}
               />
+              <button
+                className="movie__select-button"
+                onClick={() =>
+                  toggleMovieSelection(movie.kinopoiskId || movie.filmId)
+                }
+              >
+                {buttonSymbol}
+              </button>
             </div>
             <div className="movie__info">
               <div
