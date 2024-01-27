@@ -22,6 +22,9 @@ const getClassByRate = (rating: number | string) => {
 };
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
+  if (!Array.isArray(movies)) {
+    return <div>Загрузка фильмов...</div>;
+  }
   return (
     <div className="movies">
       {movies.map((movie) => (

@@ -1,5 +1,5 @@
 .header {
-  background-color: #343a40;
+  background-image: linear-gradient(to right, #3d0847, #00695c);
   color: #ffffff;
   padding: 10px 20px;
   display: flex;
@@ -15,7 +15,7 @@
 
 .search-container {
   padding: 10px;
-  background-color: #f8f9fa;
+  background-image: linear-gradient(to right, #3d0847, #00695c);
 }
 
 .search-container form {

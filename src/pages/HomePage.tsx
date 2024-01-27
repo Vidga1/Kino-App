@@ -4,8 +4,11 @@ import MovieList from '../components/MovieList/MovieList';
 import Modal from '../components/Modal/Modal';
 import { fetchMovies, fetchMovieDetails } from '../components/Api/fetchMovies';
 import Pagination from '../components/Pagination/Pagination';
-import SearchFilterForm from '../components/Header/SearchFilterForm';
-import { fetchMoviesByTitle } from '../components/Api/searchMovies';
+import SearchForms from '../components/Header/SearchForms';
+import {
+  fetchMoviesByTitle,
+  fetchMoviesByFilters,
+} from '../components/Api/searchMovies';
 
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -55,32 +58,43 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const loadMovies = async () => {
-      if (searchParams && searchParams.keyword) {
-        try {
-          // Используйте searchParams для запроса к API
-          const { films, pagesCount } = await fetchMoviesByTitle(
-            searchParams.keyword,
-            currentPage,
-          );
-          setMovies(films);
-          setTotalPages(pagesCount);
-        } catch (error) {
-          console.error('Ошибка при загрузке фильмов:', error);
+      try {
+        let response;
+        if (searchParams) {
+          if (searchParams.keyword) {
+            // Загрузка фильмов по названию
+            response = await fetchMoviesByTitle(
+              searchParams.keyword,
+              currentPage,
+            );
+          } else {
+            // Создание объекта фильтров из searchParams
+            const filters = {
+              countries: searchParams.countries,
+              genres: searchParams.genres,
+              order: searchParams.order,
+              type: searchParams.type,
+              ratingFrom: searchParams.ratingFrom,
+              ratingTo: searchParams.ratingTo,
+              yearFrom: searchParams.yearFrom,
+              yearTo: searchParams.yearTo,
+            };
+            // Загрузка фильмов по фильтрам
+            response = await fetchMoviesByFilters(filters, currentPage);
+          }
+        } else {
+          // Загрузка популярных фильмов или других по умолчанию
+          response = await fetchMovies(currentPage);
         }
-      } else {
-        // Здесь логика для загрузки популярных фильмов или других по умолчанию
-        try {
-          const moviesResponse = await fetchMovies(currentPage);
-          setMovies(moviesResponse.films);
-          setTotalPages(moviesResponse.pagesCount);
-        } catch (error) {
-          console.error('Ошибка при загрузке фильмов:', error);
-        }
+        setMovies(response.films);
+        setTotalPages(response.pagesCount);
+      } catch (error) {
+        console.error('Ошибка при загрузке фильмов:', error);
       }
     };
 
     loadMovies();
-  }, [currentPage, searchParams]);
+  }, [currentPage, searchParams]); // Зависимости useEffect
 
   const handleMovieSelect = async (movie: Movie) => {
     console.log('Выбран фильм:', movie);
@@ -107,7 +121,7 @@ const HomePage: React.FC = () => {
   return (
     <div>
       <Header />
-      <SearchFilterForm onSearchResults={handleSearchResults} />
+      <SearchForms onSearchResults={handleSearchResults} />
       <MovieList movies={movies} onMovieSelect={handleMovieSelect} />
       {isModalOpen && selectedMovie && (
         <Modal

@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { loadFilterOptions } from '../Api/loadFilter';
-import { fetchMoviesByTitle } from '../Api/searchMovies';
+import { fetchMoviesByTitle, fetchMoviesByFilters } from '../Api/searchMovies';
 
-const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
-  onSearchResults,
-}) => {
+const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [searchResults, setSearchResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -32,15 +29,40 @@ const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
     loadFilters();
   }, []);
 
-  const handleSearch = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSearchByName = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
     try {
       const { films, pagesCount } = await fetchMoviesByTitle(searchTerm);
-      const searchParams: SearchParams = {
-        keyword: searchTerm,
-      };
+      onSearchResults(films, pagesCount, { keyword: searchTerm });
+    } catch (error) {
+      console.error('Ошибка при поиске:', error);
+    }
+  };
 
-      onSearchResults(films, pagesCount, searchParams);
+  const handleSearchByFilters = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    const filters = {
+      countries: (document.getElementById('countrySelect') as HTMLSelectElement)
+        .value,
+      genres: (document.getElementById('genreSelect') as HTMLSelectElement)
+        .value,
+      order: (document.getElementById('orderSelect') as HTMLSelectElement)
+        .value,
+      type: (document.getElementById('typeSelect') as HTMLSelectElement).value,
+      ratingFrom: (document.getElementById('ratingFrom') as HTMLInputElement)
+        .value,
+      ratingTo: (document.getElementById('ratingTo') as HTMLInputElement).value,
+      yearFrom: (document.getElementById('yearFrom') as HTMLInputElement).value,
+      yearTo: (document.getElementById('yearTo') as HTMLInputElement).value,
+    };
+
+    try {
+      const { films, pagesCount } = await fetchMoviesByFilters(filters);
+      onSearchResults(films, pagesCount, filters);
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }
@@ -48,8 +70,7 @@ const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
 
   return (
     <div className="search-container">
-      <form id="filterSearchForm" onSubmit={handleSearch}>
-        <button type="submit">Поиск по фильтрам</button>
+      <form id="filterSearchForm" onSubmit={handleSearchByFilters}>
         <select id="countrySelect" name="countrySelect" className="filter">
           <option value="" disabled selected hidden>
             Выберите страну
@@ -121,6 +142,9 @@ const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
           className="filter smaller-input"
           placeholder="Год до"
         />
+        <button type="submit">Поиск по фильтрам</button>
+      </form>
+      <form onSubmit={handleSearchByName} style={{ marginTop: '10px' }}>
         <input
           type="text"
           value={searchTerm}
@@ -132,4 +156,4 @@ const SearchFilterForm: React.FC<SearchFilterFormProps> = ({
     </div>
   );
 };
-export default SearchFilterForm;
+export default SearchForms;

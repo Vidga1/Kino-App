@@ -76,3 +76,15 @@ interface SearchFilterFormProps {
     searchParams: SearchParams,
   ) => void;
 }
+
+interface Filters {
+  [key: string]: string | undefined;
+  countries?: string;
+  genres?: string;
+  order?: string;
+  type?: string;
+  ratingFrom?: string;
+  ratingTo?: string;
+  yearFrom?: string;
+  yearTo?: string;
+}
