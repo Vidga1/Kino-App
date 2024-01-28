@@ -5,30 +5,48 @@ const SelectedMoviesList: React.FC = () => {
 
   useEffect(() => {
     const rawStoredMovies = localStorage.getItem('selectedMovies') || '{}';
-    const storedMovies: Record<string, unknown> = JSON.parse(rawStoredMovies);
-    const filteredMovies = Object.values(storedMovies).filter((movie) => {
-      const isMovieSelect =
-        (movie as MovieSelect).kinopoiskId || (movie as MovieSelect).filmId;
-      return isMovieSelect;
-    }) as MovieSelect[];
-
-    setSelectedMovies(filteredMovies);
+    const storedMovies: { [key: string]: MovieSelect } =
+      JSON.parse(rawStoredMovies);
+    const validMovies = Object.values(storedMovies).filter(
+      (movie) => movie.nameRu && movie.posterUrlPreview,
+    );
+    setSelectedMovies(validMovies);
   }, []);
 
-  if (selectedMovies.length === 0) {
-    return <div>Нет выбранных фильмов</div>;
-  }
+  const handleMovieRemove = (movieId: number | undefined) => {
+    if (movieId === undefined) return; // Если movieId не определен, функция ничего не делает
+
+    setSelectedMovies((prevMovies) => {
+      const newMovies = prevMovies.filter(
+        (m) => m.kinopoiskId !== movieId && m.filmId !== movieId,
+      );
+      const newStoredMovies = {
+        ...JSON.parse(localStorage.getItem('selectedMovies') || '{}'),
+      };
+      delete newStoredMovies[movieId];
+      localStorage.setItem('selectedMovies', JSON.stringify(newStoredMovies));
+      return newMovies;
+    });
+  };
 
   return (
     <div className="movies">
-      {selectedMovies.map((movie, index) => (
-        <div key={movie.kinopoiskId || movie.filmId || index} className="movie">
+      {selectedMovies.map((movie) => (
+        <div key={movie.kinopoiskId || movie.filmId} className="movie">
           <div className="movie__cover-inner">
             <img
               src={movie.posterUrlPreview}
               className="movie__cover"
               alt={movie.nameRu}
             />
+            <button
+              className="movie__select-button"
+              onClick={() =>
+                handleMovieRemove(movie.kinopoiskId ?? movie.filmId)
+              }
+            >
+              ✕
+            </button>
           </div>
           <div className="movie__info">
             <div className="movie__title">{movie.nameRu}</div>
