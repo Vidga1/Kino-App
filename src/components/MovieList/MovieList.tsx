@@ -22,9 +22,7 @@ const getClassByRate = (rating: number | string) => {
 };
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
-  const [selectedMovies, setSelectedMovies] = useState<{
-    [key: number]: boolean;
-  }>(() => {
+  const [selectedMovies, setSelectedMovies] = useState<SelectedMovies>(() => {
     return JSON.parse(localStorage.getItem('selectedMovies') || '{}');
   });
 
@@ -32,13 +30,19 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
     return <div>Загрузка фильмов...</div>;
   }
 
-  const toggleMovieSelection = (movieId: number) => {
-    // Указываем тип для movieId
-    setSelectedMovies((prevState: { [key: number]: boolean }) => {
-      // Указываем тип для prevState
-      const newState = { ...prevState, [movieId]: !prevState[movieId] };
-      localStorage.setItem('selectedMovies', JSON.stringify(newState));
-      return newState;
+  const toggleMovieSelection = (movie: Movie) => {
+    setSelectedMovies((prevState) => {
+      const newSelectedMovies = { ...prevState };
+      const movieId = movie.kinopoiskId || movie.filmId;
+
+      if (newSelectedMovies[movieId]) {
+        delete newSelectedMovies[movieId];
+      } else {
+        newSelectedMovies[movieId] = movie;
+      }
+
+      localStorage.setItem('selectedMovies', JSON.stringify(newSelectedMovies));
+      return newSelectedMovies;
     });
   };
 
@@ -59,9 +63,7 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
               />
               <button
                 className="movie__select-button"
-                onClick={() =>
-                  toggleMovieSelection(movie.kinopoiskId || movie.filmId)
-                }
+                onClick={() => toggleMovieSelection(movie)}
               >
                 {buttonSymbol}
               </button>

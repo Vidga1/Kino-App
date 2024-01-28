@@ -20,6 +20,17 @@ interface Movie {
   rating: number;
 }
 
+type MovieSelect = {
+  kinopoiskId?: number;
+  filmId?: number;
+  nameRu?: string;
+  posterUrlPreview?: string;
+  year?: string;
+  countries?: Array<{ country: string }>;
+  genres?: Array<{ genre: string }>;
+  rating?: string;
+};
+
 interface MovieDetails extends Movie {
   description: string;
   posterUrl: string;
@@ -90,3 +101,7 @@ interface Filters {
   yearFrom?: string;
   yearTo?: string;
 }
+
+type SelectedMovies = {
+  [key: number]: Movie;
+};
