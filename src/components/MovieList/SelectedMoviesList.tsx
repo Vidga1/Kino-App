@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getClassByRate } from './MovieList';
 
 const SelectedMoviesList: React.FC = () => {
   const [selectedMovies, setSelectedMovies] = useState<MovieSelect[]>([]);
@@ -14,7 +15,7 @@ const SelectedMoviesList: React.FC = () => {
   }, []);
 
   const handleMovieRemove = (movieId: number | undefined) => {
-    if (movieId === undefined) return; // Если movieId не определен, функция ничего не делает
+    if (movieId === undefined) return;
 
     setSelectedMovies((prevMovies) => {
       const newMovies = prevMovies.filter(
@@ -58,7 +59,18 @@ const SelectedMoviesList: React.FC = () => {
             <div className="movie__category">
               {movie.genres?.map((g) => g.genre).join(', ') || 'Неизвестно'}
             </div>
-            <div className="movie__average">{movie.rating}</div>
+            <a
+              href={`https://kinopoisk.ru/film/${movie.kinopoiskId || movie.filmId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button className="movie__watch-button">Смотреть</button>
+            </a>
+            <div
+              className={`movie__average movie__average--${getClassByRate(movie.rating || 'Н/Д')}`}
+            >
+              {movie.rating || 'Н/Д'}
+            </div>
           </div>
         </div>
       ))}

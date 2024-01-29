@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/MovieList.css';
 
-const getClassByRate = (rating: number | string) => {
+export const getClassByRate = (rating: number | string) => {
   const numericRating =
     typeof rating === 'string' && !rating.endsWith('%')
       ? parseFloat(rating)

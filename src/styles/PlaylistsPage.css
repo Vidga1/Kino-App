@@ -1,0 +1,11 @@
+.playlists-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.playlists-page-container h1 {
+  margin-bottom: 20px; /* Отступ снизу для заголовка */
+}
