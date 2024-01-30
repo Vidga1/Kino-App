@@ -2,8 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/Header.css';
 
-
-
 const Header: React.FC = () => {
   const handleReload = () => {
     window.location.reload();
@@ -11,7 +9,7 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="header__content">
-      <a onClick={handleReload} className="header__logo">
+        <a onClick={handleReload} className="header__logo">
           На главную
         </a>
       </div>

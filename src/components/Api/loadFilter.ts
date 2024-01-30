@@ -10,7 +10,7 @@ export async function loadFilterOptions() {
     });
 
     if (!response.ok) {
-      throw new Error(`Ошибка HTTP: ${response.status}`);
+      return Promise.reject(new Error(`Ошибка HTTP: ${response.status}`));
     }
 
     const data = await response.json();
