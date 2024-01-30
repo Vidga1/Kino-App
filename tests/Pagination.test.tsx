@@ -7,17 +7,25 @@ describe('Pagination Component', () => {
     const totalPages = 10;
     const currentPage = 5;
     const { getAllByRole } = render(
-      <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={() => {}} />
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={() => {}}
+      />,
     );
 
     const pageItems = getAllByRole('listitem');
-    expect(pageItems).toHaveLength(7); 
+    expect(pageItems).toHaveLength(7);
   });
 
   test('выделяет текущую страницу как активную', () => {
     const currentPage = 5;
     const { getByText } = render(
-      <Pagination totalPages={10} currentPage={currentPage} onPageChange={() => {}} />
+      <Pagination
+        totalPages={10}
+        currentPage={currentPage}
+        onPageChange={() => {}}
+      />,
     );
 
     const activePageItem = getByText(currentPage).parentNode;
@@ -27,7 +35,11 @@ describe('Pagination Component', () => {
   test('вызывает onPageChange при клике на номер страницы', () => {
     const onPageChange = jest.fn();
     const { getByText } = render(
-      <Pagination totalPages={10} currentPage={5} onPageChange={onPageChange} />
+      <Pagination
+        totalPages={10}
+        currentPage={5}
+        onPageChange={onPageChange}
+      />,
     );
 
     const pageToClick = 3;

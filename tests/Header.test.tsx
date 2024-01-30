@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { render, fireEvent } from '@testing-library/react';
-import Header from '../src/components/Header/Header'; 
+import Header from '../src/components/Header/Header';
 
 describe('Header Component', () => {
   test('отображает компонент Header', () => {
     const { getByText } = render(
       <Router>
         <Header />
-      </Router>
+      </Router>,
     );
 
     expect(getByText('На главную')).toBeInTheDocument();
@@ -17,20 +17,20 @@ describe('Header Component', () => {
 
   test('перезагрузка страницы при клике на "На главную"', () => {
     const reloadMock = jest.fn();
-  
+
     Object.defineProperty(window, 'location', {
       value: {
         reload: reloadMock,
       },
       writable: true,
     });
-  
+
     const { getByText } = render(
       <Router>
         <Header />
-      </Router>
+      </Router>,
     );
-  
+
     fireEvent.click(getByText('На главную'));
     expect(reloadMock).toHaveBeenCalled();
   });
@@ -39,9 +39,12 @@ describe('Header Component', () => {
     const { getByText } = render(
       <Router>
         <Header />
-      </Router>
+      </Router>,
     );
 
-    expect(getByText('Список моих фильмов').closest('a')).toHaveAttribute('href', '/playlists');
+    expect(getByText('Список моих фильмов').closest('a')).toHaveAttribute(
+      'href',
+      '/playlists',
+    );
   });
 });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from '../components/Header/Header';
 import MovieList from '../components/MovieList/MovieList';
 import Modal from '../components/Modal/Modal';
@@ -18,19 +18,22 @@ const HomePage: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
 
-  const handleSearchResults = (
-    newMovies: Movie[],
-    newTotalPages: number,
-    newSearchParams: SearchParams,
-  ) => {
-    setMovies(newMovies);
-    setCurrentPage(1);
-    setTotalPages(newTotalPages);
-    setSearchParams(newSearchParams);
-  };
+  const handleSearchResults = useCallback(
+    (
+      newMovies: Movie[],
+      newTotalPages: number,
+      newSearchParams: SearchParams,
+    ) => {
+      setMovies(newMovies);
+      setCurrentPage(1);
+      setTotalPages(newTotalPages);
+      setSearchParams(newSearchParams);
+    },
+    [],
+  );
 
   useEffect(() => {
-    const loadMovies = async () => {
+    const loadInitialMovies = async () => {
       try {
         const moviesResponse = await fetchMovies();
         setMovies(moviesResponse.films);
@@ -40,50 +43,52 @@ const HomePage: React.FC = () => {
       }
     };
 
-    loadMovies();
+    loadInitialMovies();
   }, []);
 
   useEffect(() => {
-    if (isModalOpen) {
-      document.body.classList.add('stop-scrolling');
-    } else {
-      document.body.classList.remove('stop-scrolling');
-    }
-
-    // Очистка эффекта
+    document.body.classList.toggle('stop-scrolling', isModalOpen);
     return () => {
       document.body.classList.remove('stop-scrolling');
     };
   }, [isModalOpen]);
 
+  const selectFetchMethod = useCallback(() => {
+    if (searchParams?.keyword) {
+      return fetchMoviesByTitle(searchParams.keyword, currentPage);
+    }
+    if (searchParams) {
+      const {
+        countries,
+        genres,
+        order,
+        type,
+        ratingFrom,
+        ratingTo,
+        yearFrom,
+        yearTo,
+      } = searchParams;
+      return fetchMoviesByFilters(
+        {
+          countries,
+          genres,
+          order,
+          type,
+          ratingFrom,
+          ratingTo,
+          yearFrom,
+          yearTo,
+        },
+        currentPage,
+      );
+    }
+    return fetchMovies(currentPage);
+  }, [searchParams, currentPage]);
+
   useEffect(() => {
     const loadMovies = async () => {
       try {
-        let response;
-        if (searchParams) {
-          if (searchParams.keyword) {
-            response = await fetchMoviesByTitle(
-              searchParams.keyword,
-              currentPage,
-            );
-          } else {
-            const filters = {
-              countries: searchParams.countries,
-              genres: searchParams.genres,
-              order: searchParams.order,
-              type: searchParams.type,
-              ratingFrom: searchParams.ratingFrom,
-              ratingTo: searchParams.ratingTo,
-              yearFrom: searchParams.yearFrom,
-              yearTo: searchParams.yearTo,
-            };
-            // Загрузка фильмов по фильтрам
-            response = await fetchMoviesByFilters(filters, currentPage);
-          }
-        } else {
-          // Загрузка популярных фильмов или других по умолчанию
-          response = await fetchMovies(currentPage);
-        }
+        const response = await selectFetchMethod();
         setMovies(response.films);
         setTotalPages(response.pagesCount);
       } catch (error) {
@@ -92,11 +97,10 @@ const HomePage: React.FC = () => {
     };
 
     loadMovies();
-  }, [currentPage, searchParams]);
+  }, [currentPage, searchParams, selectFetchMethod]);
 
-  const handleMovieSelect = async (movie: Movie) => {
+  const handleMovieSelect = useCallback(async (movie: Movie) => {
     console.log('Выбран фильм:', movie);
-
     const movieId = movie.kinopoiskId || movie.filmId;
 
     if (movieId) {
@@ -111,13 +115,12 @@ const HomePage: React.FC = () => {
     } else {
       console.error('Ошибка: Идентификатор фильма не найден');
     }
-  };
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedMovie(null);
-    document.body.classList.remove('stop-scrolling');
-  };
+  }, []);
 
   return (
     <div>
@@ -134,7 +137,7 @@ const HomePage: React.FC = () => {
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
-        onPageChange={(page) => setCurrentPage(page)}
+        onPageChange={setCurrentPage}
       />
     </div>
   );
