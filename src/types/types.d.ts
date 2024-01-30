@@ -21,6 +21,9 @@ interface Movie {
 }
 
 type MovieSelect = {
+  normalizedRating: ReactNode;
+  ratingKinopoisk: number;
+  ratingImdb: number;
   kinopoiskId?: number;
   filmId?: number;
   nameRu?: string;

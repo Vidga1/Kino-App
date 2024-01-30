@@ -2,15 +2,24 @@ import React, { useState } from 'react';
 import '../../styles/MovieList.css';
 
 export const getClassByRate = (rating: number | string) => {
-  const numericRating =
-    typeof rating === 'string' && !rating.endsWith('%')
-      ? parseFloat(rating)
-      : rating;
+  let numericRating: number | null;
 
-  if (typeof numericRating === 'number') {
+  if (typeof rating === 'number') {
+    numericRating = rating;
+  } else if (
+    typeof rating === 'string' &&
+    !isNaN(parseFloat(rating)) &&
+    isFinite(parseFloat(rating))
+  ) {
+    numericRating = parseFloat(rating);
+  } else {
+    numericRating = null;
+  }
+
+  if (numericRating !== null) {
     if (numericRating >= 7) {
       return 'green';
-    } else if (numericRating > 5) {
+    } else if (numericRating > 3) {
       return 'orange';
     } else {
       return 'red';
@@ -18,6 +27,7 @@ export const getClassByRate = (rating: number | string) => {
   } else if (typeof rating === 'string' && rating.endsWith('%')) {
     return 'blue';
   }
+
   return 'default';
 };
 
@@ -42,6 +52,7 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
       }
 
       localStorage.setItem('selectedMovies', JSON.stringify(newSelectedMovies));
+      console.log('Сохраняем в localStorage:', newSelectedMovies);
       return newSelectedMovies;
     });
   };

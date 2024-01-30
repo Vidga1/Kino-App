@@ -7,28 +7,28 @@
 }
 
 .playlists-page-container h1 {
-  margin-bottom: 20px; 
+  margin-bottom: 20px;
 }
 
 .back-button {
-    position: absolute;
-    top: 20px;
-    right: 80px;
-    padding: 10px 15px;
-    background-color: #f05454; 
-    color: white; 
-    border: none;
-    border-radius: 5px;
-    text-decoration: none; 
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-  
-    &:hover {
-      background-color: #d43f3f;
-      cursor: pointer;
-    }
-  }
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  padding: 10px 15px;
+  background-color: #f05454;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 
-  .playlists-page .movie__title {
-    cursor: default;
+  &:hover {
+    background-color: #d43f3f;
+    cursor: pointer;
   }
+}
+
+.playlists-page .movie__title {
+  cursor: default;
+}

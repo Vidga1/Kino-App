@@ -8,9 +8,21 @@ const SelectedMoviesList: React.FC = () => {
     const rawStoredMovies = localStorage.getItem('selectedMovies') || '{}';
     const storedMovies: { [key: string]: MovieSelect } =
       JSON.parse(rawStoredMovies);
-    const validMovies = Object.values(storedMovies).filter(
-      (movie) => movie.nameRu && movie.posterUrlPreview,
-    );
+
+    const validMovies = Object.values(storedMovies)
+      .filter((movie) => movie.nameRu && movie.posterUrlPreview)
+      .map((movie) => {
+        const rawRating: string | number =
+          movie.ratingKinopoisk || movie.ratingImdb || movie.rating || 'Н/Д';
+        const normalizedRating =
+          typeof rawRating === 'number' ? rawRating.toString() : rawRating;
+
+        return {
+          ...movie,
+          normalizedRating,
+        };
+      });
+
     setSelectedMovies(validMovies);
   }, []);
 
@@ -67,9 +79,9 @@ const SelectedMoviesList: React.FC = () => {
               <button className="movie__watch-button">Смотреть</button>
             </a>
             <div
-              className={`movie__average movie__average--${getClassByRate(movie.rating || 'Н/Д')}`}
+              className={`movie__average movie__average--${getClassByRate(movie.normalizedRating)}`}
             >
-              {movie.rating || 'Н/Д'}
+              {movie.normalizedRating}
             </div>
           </div>
         </div>
