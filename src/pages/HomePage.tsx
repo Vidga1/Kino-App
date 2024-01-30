@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from '../components/Header/Header';
 import MovieList from '../components/MovieList/MovieList';
 import Modal from '../components/Modal/Modal';
-import { fetchMovies, fetchMovieDetails } from '../components/Api/fetchMovies';
+import { fetchMovies, fetchMovieDetails } from '../components/Api/getMovies';
 import Pagination from '../components/Pagination/Pagination';
 import SearchForms from '../components/Header/SearchForms';
 import {
