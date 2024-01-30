@@ -26,7 +26,7 @@ const HomePage: React.FC = () => {
     setMovies(newMovies);
     setCurrentPage(1);
     setTotalPages(newTotalPages);
-    setSearchParams(newSearchParams); // сохраняем параметры поиска
+    setSearchParams(newSearchParams);
   };
 
   useEffect(() => {
@@ -62,13 +62,11 @@ const HomePage: React.FC = () => {
         let response;
         if (searchParams) {
           if (searchParams.keyword) {
-            // Загрузка фильмов по названию
             response = await fetchMoviesByTitle(
               searchParams.keyword,
               currentPage,
             );
           } else {
-            // Создание объекта фильтров из searchParams
             const filters = {
               countries: searchParams.countries,
               genres: searchParams.genres,

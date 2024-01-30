@@ -23,7 +23,15 @@ const Pagination: React.FC<PaginationProps> = ({
             key={number}
             className={`pagination__item ${currentPage === number ? 'pagination__item--active' : ''}`}
           >
-            <a onClick={() => onPageChange(number)}>{number}</a>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onPageChange(number);
+              }}
+            >
+              {number}
+            </a>
           </li>
         ))}
       </ul>

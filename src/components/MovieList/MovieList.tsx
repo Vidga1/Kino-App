@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import '../../styles/MovieList.css';
 
 export const getClassByRate = (rating: number | string) => {
+  if (typeof rating === 'string' && rating.endsWith('%')) {
+    return 'blue';
+  }
+
   let numericRating: number | null;
 
   if (typeof rating === 'number') {
     numericRating = rating;
-  } else if (
-    typeof rating === 'string' &&
-    !isNaN(parseFloat(rating)) &&
-    isFinite(parseFloat(rating))
-  ) {
+  } else if (typeof rating === 'string') {
     numericRating = parseFloat(rating);
+    if (isNaN(numericRating)) {
+      return 'default';
+    }
   } else {
     numericRating = null;
   }
@@ -24,8 +27,6 @@ export const getClassByRate = (rating: number | string) => {
     } else {
       return 'red';
     }
-  } else if (typeof rating === 'string' && rating.endsWith('%')) {
-    return 'blue';
   }
 
   return 'default';
