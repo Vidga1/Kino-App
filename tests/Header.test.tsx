@@ -18,7 +18,6 @@ describe('Header Component', () => {
   test('перезагрузка страницы при клике на "На главную"', () => {
     const reloadMock = jest.fn();
   
-    // Мокаем window.location с использованием Object.defineProperty
     Object.defineProperty(window, 'location', {
       value: {
         reload: reloadMock,
