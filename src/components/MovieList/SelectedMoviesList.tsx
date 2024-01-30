@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getClassByRate } from './MovieList';
 
-const SelectedMoviesList: React.FC = () => {
+type SelectedMoviesListProps = {
+  currentPage: number;
+  moviesPerPage: number;
+};
+
+const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
+  currentPage,
+  moviesPerPage,
+}) => {
   const [selectedMovies, setSelectedMovies] = useState<MovieSelect[]>([]);
 
   useEffect(() => {
@@ -9,7 +17,7 @@ const SelectedMoviesList: React.FC = () => {
     const storedMovies: { [key: string]: MovieSelect } =
       JSON.parse(rawStoredMovies);
 
-    const validMovies = Object.values(storedMovies)
+    const allMovies = Object.values(storedMovies)
       .filter((movie) => movie.nameRu && movie.posterUrlPreview)
       .map((movie) => {
         const rawRating: string | number =
@@ -23,8 +31,12 @@ const SelectedMoviesList: React.FC = () => {
         };
       });
 
-    setSelectedMovies(validMovies);
-  }, []);
+    const startIndex = (currentPage - 1) * moviesPerPage;
+    const endIndex = startIndex + moviesPerPage;
+    const selectedMoviesForPage = allMovies.slice(startIndex, endIndex);
+
+    setSelectedMovies(selectedMoviesForPage);
+  }, [currentPage, moviesPerPage]);
 
   const handleMovieRemove = (movieId: number | undefined) => {
     if (movieId === undefined) return;
