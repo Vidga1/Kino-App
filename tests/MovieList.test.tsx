@@ -1,5 +1,5 @@
 import React from 'react';
-import { getClassByRate } from '../src/components/MovieList/MovieList';
+import { getClassByRate } from '../src/helpers/getClassByRate';
 import MovieList from '../src/components/MovieList/MovieList';
 import { render } from '@testing-library/react';
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getClassByRate } from './MovieList';
+import { getClassByRate } from '../../helpers/getClassByRate';
 
 type SelectedMoviesListProps = {
   currentPage: number;
