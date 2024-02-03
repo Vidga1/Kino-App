@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getClassByRate } from '../../helpers/getClassByRate';
+import { useAuth } from '../../hooks/UseAuth';
+import { db } from '../../firebase/firebaseConfig';
+import { collection, doc, getDoc, updateDoc } from 'firebase/firestore';
 
 type SelectedMoviesListProps = {
   currentPage: number;
@@ -11,47 +14,44 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
   moviesPerPage,
 }) => {
   const [selectedMovies, setSelectedMovies] = useState<MovieSelect[]>([]);
+  const { currentUser } = useAuth();
 
   useEffect(() => {
-    const rawStoredMovies = localStorage.getItem('selectedMovies') || '{}';
-    const storedMovies: { [key: string]: MovieSelect } =
-      JSON.parse(rawStoredMovies);
-
-    const allMovies = Object.values(storedMovies)
-      .filter((movie) => movie.nameRu && movie.posterUrlPreview)
-      .map((movie) => {
-        const rawRating: string | number =
-          movie.ratingKinopoisk || movie.ratingImdb || movie.rating || 'Н/Д';
-        const normalizedRating =
-          typeof rawRating === 'number' ? rawRating.toString() : rawRating;
-
-        return {
-          ...movie,
-          normalizedRating,
-        };
-      });
-
-    const startIndex = (currentPage - 1) * moviesPerPage;
-    const endIndex = startIndex + moviesPerPage;
-    const selectedMoviesForPage = allMovies.slice(startIndex, endIndex);
-
-    setSelectedMovies(selectedMoviesForPage);
-  }, [currentPage, moviesPerPage]);
-
-  const handleMovieRemove = (movieId: number | undefined) => {
-    if (movieId === undefined) return;
-
-    setSelectedMovies((prevMovies) => {
-      const newMovies = prevMovies.filter(
-        (m) => m.kinopoiskId !== movieId && m.filmId !== movieId,
-      );
-      const newStoredMovies = {
-        ...JSON.parse(localStorage.getItem('selectedMovies') || '{}'),
+    if (currentUser) {
+      const loadSelectedMovies = async () => {
+        const docRef = doc(db, 'selectedMovies', currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          const movies = Object.values(data.movies || {}) as MovieSelect[];
+          // Фильтрация и пагинация происходят здесь
+          const startIndex = (currentPage - 1) * moviesPerPage;
+          const endIndex = startIndex + moviesPerPage;
+          setSelectedMovies(movies.slice(startIndex, endIndex));
+        } else {
+          console.log('No such document!');
+        }
       };
-      delete newStoredMovies[movieId];
-      localStorage.setItem('selectedMovies', JSON.stringify(newStoredMovies));
-      return newMovies;
-    });
+      loadSelectedMovies();
+    }
+  }, [currentUser, currentPage, moviesPerPage]);
+
+  const handleMovieRemove = async (movieId: number | undefined) => {
+    if (movieId === undefined || !currentUser) return;
+
+    const docRef = doc(db, 'selectedMovies', currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      const updatedMovies = { ...data.movies };
+      delete updatedMovies[movieId];
+      await updateDoc(docRef, { movies: updatedMovies });
+      setSelectedMovies((prevMovies) =>
+        prevMovies.filter(
+          (m) => m.kinopoiskId !== movieId && m.filmId !== movieId,
+        ),
+      );
+    }
   };
 
   return (

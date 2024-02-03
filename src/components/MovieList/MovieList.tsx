@@ -1,31 +1,47 @@
-import React, { useState } from 'react';
-import '../../styles/MovieList.css';
+import React, { useState, useEffect } from 'react';
 import { getClassByRate } from '../../helpers/getClassByRate';
+import { useAuth } from '../../hooks/UseAuth';
+import { db } from '../../firebase/firebaseConfig';
+import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import '../../styles/MovieList.css';
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
-  const [selectedMovies, setSelectedMovies] = useState<SelectedMovies>(() => {
-    return JSON.parse(localStorage.getItem('selectedMovies') || '{}');
-  });
+  const { currentUser } = useAuth();
+  const [selectedMovies, setSelectedMovies] = useState<SelectedMovies>({});
 
-  if (!Array.isArray(movies)) {
-    return <div>Загрузка фильмов...</div>;
-  }
+  useEffect(() => {
+    const loadSelectedMovies = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, 'selectedMovies', currentUser.uid);
+        const docSnap = await getDoc(userDocRef);
 
-  const toggleMovieSelection = (movie: Movie) => {
-    setSelectedMovies((prevState) => {
-      const newSelectedMovies = { ...prevState };
-      const movieId = movie.kinopoiskId || movie.filmId;
-
-      if (newSelectedMovies[movieId]) {
-        delete newSelectedMovies[movieId];
-      } else {
-        newSelectedMovies[movieId] = movie;
+        if (docSnap.exists()) {
+          setSelectedMovies(docSnap.data().movies);
+        } else {
+          console.log('No saved movies');
+        }
       }
+    };
 
-      localStorage.setItem('selectedMovies', JSON.stringify(newSelectedMovies));
-      console.log('Сохраняем в localStorage:', newSelectedMovies);
-      return newSelectedMovies;
-    });
+    loadSelectedMovies();
+  }, [currentUser]);
+
+  const toggleMovieSelection = async (movie: Movie) => {
+    if (!currentUser) return;
+
+    const updatedSelectedMovies = { ...selectedMovies };
+    const movieId = movie.kinopoiskId || movie.filmId;
+
+    if (updatedSelectedMovies[movieId]) {
+      delete updatedSelectedMovies[movieId];
+    } else {
+      updatedSelectedMovies[movieId] = movie;
+    }
+
+    setSelectedMovies(updatedSelectedMovies);
+
+    const userDocRef = doc(db, 'selectedMovies', currentUser.uid);
+    await setDoc(userDocRef, { movies: updatedSelectedMovies });
   };
 
   return (
