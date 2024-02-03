@@ -18,7 +18,7 @@ const PlaylistsPage: React.FC = () => {
 
   return (
     <div className="playlists-page-container playlists-page">
-      <Link to="/" className="back-button">
+      <Link to="/home" className="back-button">
         Назад
       </Link>
       <h1>Избранные фильмы</h1>

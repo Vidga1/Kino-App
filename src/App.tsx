@@ -1,18 +1,28 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
+import { AuthProvider } from './components/Auth/AuthContext';
 import HomePage from './pages/HomePage';
 import PlaylistsPage from './pages/PlaylistsPage';
+import AuthPage from './pages/AuthPage';
 
 function App() {
   return (
-    <div>
+    <AuthProvider>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/playlists" element={<PlaylistsPage />} />
         <Route path="/filters" element={<HomePage />} />
         <Route path="/search" element={<HomePage />} />
+        <Route path="*" element={<Navigate replace to="/auth" />} />
       </Routes>
-    </div>
+    </AuthProvider>
   );
 }
+
 export default App;
