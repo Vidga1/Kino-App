@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react';
 import SearchForms from '../src/components/Header/SearchForms';
-import { loadFilterOptions } from '../src/components/Api/loadFilter';
+import { loadFilterOptions } from '../src/Api/loadFilter';
 import {
   fetchMoviesByTitle,
   fetchMoviesByFilters,
-} from '../src/components/Api/searchMovies';
+} from '../src/Api/searchMovies';
 
 jest.mock('../src/components/Api/loadFilter', () => ({
   loadFilterOptions: jest.fn(),

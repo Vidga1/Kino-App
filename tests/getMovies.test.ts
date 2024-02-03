@@ -1,7 +1,4 @@
-import {
-  fetchMovies,
-  fetchMovieDetails,
-} from '../src/components/Api/getMovies';
+import { fetchMovies, fetchMovieDetails } from '../src/Api/getMovies';
 import fetchMock from 'jest-fetch-mock';
 
 fetchMock.enableMocks();

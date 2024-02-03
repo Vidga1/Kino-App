@@ -1,7 +1,7 @@
 import {
   fetchMoviesByTitle,
   fetchMoviesByFilters,
-} from '../src/components/Api/searchMovies';
+} from '../src/Api/searchMovies';
 import fetchMock from 'jest-fetch-mock';
 
 fetchMock.enableMocks();

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { loadFilterOptions } from '../Api/loadFilter';
-import { fetchMoviesByTitle, fetchMoviesByFilters } from '../Api/searchMovies';
+import { loadFilterOptions } from '../../Api/loadFilter';
+import {
+  fetchMoviesByTitle,
+  fetchMoviesByFilters,
+} from '../../Api/searchMovies';
 import { useNavigate } from 'react-router-dom';
 
 const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
@@ -39,6 +42,7 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
       const { films, pagesCount } = await fetchMoviesByTitle(searchTerm);
       onSearchResults(films, pagesCount, { keyword: searchTerm });
       setSearchTerm('');
+      navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }

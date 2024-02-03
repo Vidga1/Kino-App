@@ -1,4 +1,4 @@
-import { loadFilterOptions } from '../src/components/Api/loadFilter';
+import { loadFilterOptions } from '../src/Api/loadFilter';
 import fetchMock from 'jest-fetch-mock';
 
 fetchMock.enableMocks();

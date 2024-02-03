@@ -3,13 +3,10 @@ import { useLocation } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import MovieList from '../components/MovieList/MovieList';
 import Modal from '../components/Modal/Modal';
-import { fetchMovies, fetchMovieDetails } from '../components/Api/getMovies';
+import { fetchMovies, fetchMovieDetails } from '../Api/getMovies';
 import Pagination from '../components/Pagination/Pagination';
 import SearchForms from '../components/Header/SearchForms';
-import {
-  fetchMoviesByTitle,
-  fetchMoviesByFilters,
-} from '../components/Api/searchMovies';
+import { fetchMoviesByTitle, fetchMoviesByFilters } from '../Api/searchMovies';
 
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -55,54 +52,25 @@ const HomePage: React.FC = () => {
     };
   }, [isModalOpen]);
 
-  const selectFetchMethod = useCallback(() => {
-    if (searchParams?.keyword) {
-      return fetchMoviesByTitle(searchParams.keyword, currentPage);
-    }
-    if (searchParams) {
-      const {
-        countries,
-        genres,
-        order,
-        type,
-        ratingFrom,
-        ratingTo,
-        yearFrom,
-        yearTo,
-      } = searchParams;
-      return fetchMoviesByFilters(
-        {
-          countries,
-          genres,
-          order,
-          type,
-          ratingFrom,
-          ratingTo,
-          yearFrom,
-          yearTo,
-        },
-        currentPage,
-      );
-    }
-    return fetchMovies(currentPage);
-  }, [searchParams, currentPage]);
-
   useEffect(() => {
     const loadMovies = async () => {
-      let response;
       try {
-        // Проверяем, есть ли параметры поиска в URL
-        if (location.pathname.includes('/filters') && location.search) {
-          // Извлекаем параметры поиска из URL
-          const searchParams = new URLSearchParams(location.search);
-          const filters = Object.fromEntries(searchParams.entries());
+        const searchParams = new URLSearchParams(location.search);
+        let response;
 
-          // Применяем фильтры для загрузки фильмов
+        if (location.pathname.includes('/filters')) {
+          const filters = Object.fromEntries(searchParams.entries());
           response = await fetchMoviesByFilters(filters, currentPage);
+        } else if (
+          location.pathname.includes('/search') &&
+          searchParams.has('query')
+        ) {
+          const query = searchParams.get('query') || '';
+          response = await fetchMoviesByTitle(query, currentPage);
         } else {
-          // Загрузка фильмов без фильтров
           response = await fetchMovies(currentPage);
         }
+
         setMovies(response.films);
         setTotalPages(response.pagesCount);
       } catch (error) {
