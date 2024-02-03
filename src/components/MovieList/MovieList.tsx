@@ -10,18 +10,18 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
   const [selectedMovies, setSelectedMovies] = useState<SelectedMovies>({});
 
   useEffect(() => {
-    const loadSelectedMovies = async () => {
+    async function loadSelectedMovies() {
       if (currentUser) {
         const userDocRef = doc(db, 'selectedMovies', currentUser.uid);
         const docSnap = await getDoc(userDocRef);
 
-        if (docSnap.exists()) {
+        if (docSnap.exists() && docSnap.data().movies) {
           setSelectedMovies(docSnap.data().movies);
         } else {
           console.log('No saved movies');
         }
       }
-    };
+    }
 
     loadSelectedMovies();
   }, [currentUser]);
@@ -29,8 +29,8 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
   const toggleMovieSelection = async (movie: Movie) => {
     if (!currentUser) return;
 
+    const movieId = String(movie.kinopoiskId || movie.filmId);
     const updatedSelectedMovies = { ...selectedMovies };
-    const movieId = movie.kinopoiskId || movie.filmId;
 
     if (updatedSelectedMovies[movieId]) {
       delete updatedSelectedMovies[movieId];

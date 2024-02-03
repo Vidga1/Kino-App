@@ -17,23 +17,45 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
   const { currentUser } = useAuth();
 
   useEffect(() => {
-    if (currentUser) {
-      const loadSelectedMovies = async () => {
-        const docRef = doc(db, 'selectedMovies', currentUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const movies = Object.values(data.movies || {}) as MovieSelect[];
-          // Фильтрация и пагинация происходят здесь
-          const startIndex = (currentPage - 1) * moviesPerPage;
-          const endIndex = startIndex + moviesPerPage;
-          setSelectedMovies(movies.slice(startIndex, endIndex));
-        } else {
-          console.log('No such document!');
-        }
-      };
-      loadSelectedMovies();
-    }
+    const loadSelectedMovies = async () => {
+      if (!currentUser) return;
+
+      const docRef = doc(db, 'selectedMovies', currentUser.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        const loadedMovies: MovieSelect[] = Object.entries(
+          data.movies || {},
+        ).map(([key, movie]) => {
+          const typedMovie = movie as Partial<MovieSelect>;
+          return {
+            ...typedMovie,
+            ratingKinopoisk: typedMovie.ratingKinopoisk || 0,
+            ratingImdb: typedMovie.ratingImdb || 0,
+            kinopoiskId: typedMovie.kinopoiskId || parseInt(key, 10),
+            filmId: typedMovie.filmId || parseInt(key, 10),
+            normalizedRating: getClassByRate(
+              typedMovie.ratingKinopoisk || typedMovie.rating || 'Н/Д',
+            ),
+            nameRu: typedMovie.nameRu || '',
+            posterUrlPreview: typedMovie.posterUrlPreview || '',
+            year: typedMovie.year || '',
+            countries: typedMovie.countries || [],
+            genres: typedMovie.genres || [],
+            rating: typedMovie.rating || '',
+          };
+        });
+
+        const startIndex = (currentPage - 1) * moviesPerPage;
+        const endIndex = startIndex + moviesPerPage;
+        setSelectedMovies(loadedMovies.slice(startIndex, endIndex));
+      } else {
+        console.log('No saved movies');
+      }
+    };
+
+    loadSelectedMovies();
   }, [currentUser, currentPage, moviesPerPage]);
 
   const handleMovieRemove = async (movieId: number | undefined) => {
@@ -91,9 +113,9 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
               <button className="movie__watch-button">Смотреть</button>
             </a>
             <div
-              className={`movie__average movie__average--${getClassByRate(movie.normalizedRating)}`}
+              className={`movie__average movie__average--${getClassByRate(movie.ratingKinopoisk || movie.rating || 'Н/Д')}`}
             >
-              {movie.normalizedRating}
+              {movie.ratingKinopoisk || movie.rating || 'Н/Д'}
             </div>
           </div>
         </div>

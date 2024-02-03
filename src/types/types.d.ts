@@ -106,5 +106,5 @@ interface Filters {
 }
 
 type SelectedMovies = {
-  [key: number]: Movie;
+  [key: string]: Movie;
 };
