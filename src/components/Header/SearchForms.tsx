@@ -39,6 +39,7 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
       const { films, pagesCount } = await fetchMoviesByTitle(searchTerm);
       onSearchResults(films, pagesCount, { keyword: searchTerm });
       setSearchTerm('');
+      navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }

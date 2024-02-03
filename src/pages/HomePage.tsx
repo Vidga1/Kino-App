@@ -89,20 +89,26 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const loadMovies = async () => {
-      let response;
       try {
-        // Проверяем, есть ли параметры поиска в URL
-        if (location.pathname.includes('/filters') && location.search) {
-          // Извлекаем параметры поиска из URL
-          const searchParams = new URLSearchParams(location.search);
-          const filters = Object.fromEntries(searchParams.entries());
+        const searchParams = new URLSearchParams(location.search);
+        let response;
 
-          // Применяем фильтры для загрузки фильмов
+        if (location.pathname.includes('/filters')) {
+          // Загрузка фильмов с фильтрами
+          const filters = Object.fromEntries(searchParams.entries());
           response = await fetchMoviesByFilters(filters, currentPage);
+        } else if (
+          location.pathname.includes('/search') &&
+          searchParams.has('query')
+        ) {
+          // Загрузка фильмов по ключевому слову
+          const query = searchParams.get('query') || '';
+          response = await fetchMoviesByTitle(query, currentPage);
         } else {
-          // Загрузка фильмов без фильтров
+          // Загрузка начального списка фильмов без фильтров и поиска
           response = await fetchMovies(currentPage);
         }
+
         setMovies(response.films);
         setTotalPages(response.pagesCount);
       } catch (error) {

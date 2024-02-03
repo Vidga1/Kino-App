@@ -9,9 +9,9 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       <div className="header__content">
-        <a onClick={handleReload} className="header__logo">
+        <Link to="/" className="header__logo">
           На главную
-        </a>
+        </Link>
       </div>
       <div className="header__content">
         <Link to="/playlists" className="header__logo">
