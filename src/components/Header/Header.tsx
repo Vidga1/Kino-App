@@ -11,6 +11,11 @@ const Header: React.FC = () => {
         </Link>
       </div>
       <div className="header__content">
+        <Link to="/about" className="header__logo">
+          О проекте
+        </Link>
+      </div>
+      <div className="header__content">
         <Link to="/playlists" className="header__logo">
           Список моих фильмов
         </Link>

@@ -9,6 +9,7 @@ import { AuthProvider } from './components/Auth/AuthContext';
 import HomePage from './pages/HomePage';
 import PlaylistsPage from './pages/PlaylistsPage';
 import AuthPage from './pages/AuthPage';
+import AboutPage from './pages/AboutPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/playlists" element={<PlaylistsPage />} />
         <Route path="/filters" element={<HomePage />} />
         <Route path="/search" element={<HomePage />} />
