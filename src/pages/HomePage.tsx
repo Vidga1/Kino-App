@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import Header from '../components/Header/Header';
 import MovieList from '../components/MovieList/MovieList';
 import Modal from '../components/Modal/Modal';
@@ -17,6 +18,7 @@ const HomePage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
+  const location = useLocation();
 
   const handleSearchResults = useCallback(
     (
@@ -87,8 +89,20 @@ const HomePage: React.FC = () => {
 
   useEffect(() => {
     const loadMovies = async () => {
+      let response;
       try {
-        const response = await selectFetchMethod();
+        // Проверяем, есть ли параметры поиска в URL
+        if (location.pathname.includes('/filters') && location.search) {
+          // Извлекаем параметры поиска из URL
+          const searchParams = new URLSearchParams(location.search);
+          const filters = Object.fromEntries(searchParams.entries());
+
+          // Применяем фильтры для загрузки фильмов
+          response = await fetchMoviesByFilters(filters, currentPage);
+        } else {
+          // Загрузка фильмов без фильтров
+          response = await fetchMovies(currentPage);
+        }
         setMovies(response.films);
         setTotalPages(response.pagesCount);
       } catch (error) {
@@ -97,7 +111,7 @@ const HomePage: React.FC = () => {
     };
 
     loadMovies();
-  }, [currentPage, searchParams, selectFetchMethod]);
+  }, [currentPage, location]);
 
   const handleMovieSelect = useCallback(async (movie: Movie) => {
     console.log('Выбран фильм:', movie);

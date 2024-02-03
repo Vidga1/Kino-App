@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { loadFilterOptions } from '../Api/loadFilter';
 import { fetchMoviesByTitle, fetchMoviesByFilters } from '../Api/searchMovies';
+import { useNavigate } from 'react-router-dom';
 
 const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
+  const navigate = useNavigate();
   const [countries, setCountries] = useState<Country[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,7 +38,7 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
     try {
       const { films, pagesCount } = await fetchMoviesByTitle(searchTerm);
       onSearchResults(films, pagesCount, { keyword: searchTerm });
-      setSearchTerm(''); // Сброс значения searchTerm, чтобы очистить поле ввода
+      setSearchTerm('');
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }
@@ -64,6 +66,7 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
     try {
       const { films, pagesCount } = await fetchMoviesByFilters(filters);
       onSearchResults(films, pagesCount, filters);
+      navigate(`/filters?${new URLSearchParams(filters).toString()}`);
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }

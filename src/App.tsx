@@ -9,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/playlists" element={<PlaylistsPage />} />
+        <Route path="/filters" element={<HomePage />} />
       </Routes>
     </div>
   );
