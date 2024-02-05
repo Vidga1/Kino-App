@@ -3,14 +3,6 @@ import '../styles/AboutPage.css';
 import { Link } from 'react-router-dom';
 
 const AboutPage = () => {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, []);
-
   return (
     <div className="about-page">
       <Link to="/home" className="back-button">

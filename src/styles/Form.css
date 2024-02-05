@@ -40,3 +40,20 @@
   background-color: #0056b3;
   box-shadow: 0px 0px 12px rgba(0, 123, 255, 0.6);
 }
+
+@media (max-width: 768px) {
+  .formContainer {
+    height: auto;
+    padding: 20px;
+    margin-top: 70%;
+  }
+
+  .formInput,
+  .formButton {
+    width: 80%;
+  }
+
+  .formButton {
+    width: 80%;
+  }
+}

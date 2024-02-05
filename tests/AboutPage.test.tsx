@@ -19,12 +19,6 @@ describe('AboutPage', () => {
     expect(screen.getByText(/о проекте/i)).toBeInTheDocument();
   });
 
-  test('body overflow is set to hidden on mount and unset on unmount', () => {
-    expect(document.body.style.overflow).toBe('hidden');
-    cleanup();
-    expect(document.body.style.overflow).toBe('unset');
-  });
-
   test('contains back to home link', () => {
     expect(screen.getByText(/назад/i).closest('a')).toHaveAttribute(
       'href',

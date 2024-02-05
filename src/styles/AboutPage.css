@@ -22,3 +22,25 @@
   list-style-type: disc;
   margin-left: 20px;
 }
+
+@media (max-width: 768px) {
+  .about-page {
+    font-size: 18px;
+  }
+
+  .about-page h1,
+  .about-page h2 {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-page {
+    font-size: 16px;
+  }
+
+  .about-page h1,
+  .about-page h2 {
+    margin-bottom: 5px;
+  }
+}
