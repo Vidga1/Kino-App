@@ -52,38 +52,6 @@ const HomePage: React.FC = () => {
     };
   }, [isModalOpen]);
 
-  const selectFetchMethod = useCallback(() => {
-    if (searchParams?.keyword) {
-      return fetchMoviesByTitle(searchParams.keyword, currentPage);
-    }
-    if (searchParams) {
-      const {
-        countries,
-        genres,
-        order,
-        type,
-        ratingFrom,
-        ratingTo,
-        yearFrom,
-        yearTo,
-      } = searchParams;
-      return fetchMoviesByFilters(
-        {
-          countries,
-          genres,
-          order,
-          type,
-          ratingFrom,
-          ratingTo,
-          yearFrom,
-          yearTo,
-        },
-        currentPage,
-      );
-    }
-    return fetchMovies(currentPage);
-  }, [searchParams, currentPage]);
-
   useEffect(() => {
     const loadMovies = async () => {
       try {
@@ -91,18 +59,15 @@ const HomePage: React.FC = () => {
         let response;
 
         if (location.pathname.includes('/filters')) {
-          // Загрузка фильмов с фильтрами
           const filters = Object.fromEntries(searchParams.entries());
           response = await fetchMoviesByFilters(filters, currentPage);
         } else if (
           location.pathname.includes('/search') &&
           searchParams.has('query')
         ) {
-          // Загрузка фильмов по ключевому слову
           const query = searchParams.get('query') || '';
           response = await fetchMoviesByTitle(query, currentPage);
         } else {
-          // Загрузка начального списка фильмов без фильтров и поиска
           response = await fetchMovies(currentPage);
         }
 
@@ -117,13 +82,10 @@ const HomePage: React.FC = () => {
   }, [currentPage, location]);
 
   const handleMovieSelect = useCallback(async (movie: Movie) => {
-    console.log('Выбран фильм:', movie);
     const movieId = movie.kinopoiskId || movie.filmId;
-
     if (movieId) {
       try {
         const movieDetails = await fetchMovieDetails(movieId);
-        console.log('Детали фильма:', movieDetails);
         setSelectedMovie(movieDetails);
         setIsModalOpen(true);
       } catch (error) {

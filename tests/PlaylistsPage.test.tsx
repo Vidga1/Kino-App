@@ -1,15 +1,23 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import PlaylistsPage from '../src/pages/PlaylistsPage';
+import { AuthProvider } from '../src/hooks/UseAuth';
 
-describe('PlaylistsPage Component', () => {
-  it('renders without crashing', () => {
+describe('PlaylistsPage UI', () => {
+  it('displays the header and navigation buttons', async () => {
     render(
-      <BrowserRouter>
-        <PlaylistsPage />
-      </BrowserRouter>,
+      <Router>
+        <AuthProvider>
+          <PlaylistsPage />
+        </AuthProvider>
+      </Router>,
     );
-    expect(screen.getByText('Избранные фильмы')).toBeInTheDocument();
+
+    const header = await screen.findByText('Избранные фильмы');
+    const backButton = await screen.findByText('Назад');
+
+    expect(header).toBeInTheDocument();
+    expect(backButton).toBeInTheDocument();
   });
 });

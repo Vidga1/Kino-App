@@ -12,6 +12,14 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
   const [countries, setCountries] = useState<Country[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [ratingFrom, setRatingFrom] = useState('');
+  const [ratingTo, setRatingTo] = useState('');
+  const [yearFrom, setYearFrom] = useState('');
+  const [yearTo, setYearTo] = useState('');
 
   useEffect(() => {
     const loadFilters = async () => {
@@ -54,18 +62,14 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
   ) => {
     event.preventDefault();
     const filters = {
-      countries: (document.getElementById('countrySelect') as HTMLSelectElement)
-        .value,
-      genres: (document.getElementById('genreSelect') as HTMLSelectElement)
-        .value,
-      order: (document.getElementById('orderSelect') as HTMLSelectElement)
-        .value,
-      type: (document.getElementById('typeSelect') as HTMLSelectElement).value,
-      ratingFrom: (document.getElementById('ratingFrom') as HTMLInputElement)
-        .value,
-      ratingTo: (document.getElementById('ratingTo') as HTMLInputElement).value,
-      yearFrom: (document.getElementById('yearFrom') as HTMLInputElement).value,
-      yearTo: (document.getElementById('yearTo') as HTMLInputElement).value,
+      countries: selectedCountry,
+      genres: selectedGenre,
+      order: selectedOrder,
+      type: selectedType,
+      ratingFrom: ratingFrom,
+      ratingTo: ratingTo,
+      yearFrom: yearFrom,
+      yearTo: yearTo,
     };
 
     try {
@@ -79,9 +83,20 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
 
   return (
     <div className="search-container">
-      <form id="filterSearchForm" onSubmit={handleSearchByFilters}>
-        <select id="countrySelect" name="countrySelect" className="filter">
-          <option value="" disabled selected hidden>
+      <form
+        id="filterSearchForm"
+        data-testid="filterSearchForm"
+        onSubmit={handleSearchByFilters}
+      >
+        {/* Страны */}
+        <select
+          id="countrySelect"
+          name="countrySelect"
+          className="filter"
+          value={selectedCountry}
+          onChange={(e) => setSelectedCountry(e.target.value)}
+        >
+          <option value="" disabled hidden>
             Выберите страну
           </option>
           {countries.map((country) => (
@@ -91,8 +106,15 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           ))}
         </select>
 
-        <select id="genreSelect" name="genreSelect" className="filter">
-          <option value="" disabled selected hidden>
+        {/* Жанры */}
+        <select
+          id="genreSelect"
+          name="genreSelect"
+          className="filter"
+          value={selectedGenre}
+          onChange={(e) => setSelectedGenre(e.target.value)}
+        >
+          <option value="" disabled hidden>
             Выберите жанр
           </option>
           {genres.map((genre) => (
@@ -102,7 +124,14 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           ))}
         </select>
 
-        <select id="orderSelect" name="orderSelect" className="filter">
+        {/* Сортировка */}
+        <select
+          id="orderSelect"
+          name="orderSelect"
+          className="filter"
+          value={selectedOrder}
+          onChange={(e) => setSelectedOrder(e.target.value)}
+        >
           <option value="" disabled hidden>
             Сортировка
           </option>
@@ -111,7 +140,14 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           <option value="YEAR">По годам</option>
         </select>
 
-        <select id="typeSelect" name="typeSelect" className="filter">
+        {/* Тип */}
+        <select
+          id="typeSelect"
+          name="typeSelect"
+          className="filter"
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+        >
           <option value="" disabled hidden>
             Тип
           </option>
@@ -122,12 +158,15 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           <option value="MINI_SERIES">Мини-сериал</option>
         </select>
 
+        {/* Рейтинг */}
         <input
           type="number"
           id="ratingFrom"
           name="ratingFrom"
           className="filter smaller-input"
           placeholder="Рейтинг от"
+          value={ratingFrom}
+          onChange={(e) => setRatingFrom(e.target.value)}
         />
         <input
           type="number"
@@ -135,14 +174,19 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           name="ratingTo"
           className="filter smaller-input"
           placeholder="Рейтинг до"
+          value={ratingTo}
+          onChange={(e) => setRatingTo(e.target.value)}
         />
 
+        {/* Год */}
         <input
           type="number"
           id="yearFrom"
           name="yearFrom"
           className="filter smaller-input"
           placeholder="Год от"
+          value={yearFrom}
+          onChange={(e) => setYearFrom(e.target.value)}
         />
         <input
           type="number"
@@ -150,9 +194,26 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           name="yearTo"
           className="filter smaller-input"
           placeholder="Год до"
+          value={yearTo}
+          onChange={(e) => setYearTo(e.target.value)}
         />
         <button type="submit">Поиск по фильтрам</button>
-        <button type="button" onClick={() => resetFilters({ setSearchTerm })}>
+        <button
+          type="button"
+          onClick={() =>
+            resetFilters({
+              setSearchTerm,
+              setSelectedCountry,
+              setSelectedGenre,
+              setSelectedOrder,
+              setSelectedType,
+              setRatingFrom,
+              setRatingTo,
+              setYearFrom,
+              setYearTo,
+            })
+          }
+        >
           Сбросить фильтры
         </button>
       </form>

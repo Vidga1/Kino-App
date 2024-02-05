@@ -1,75 +1,91 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import SelectedMoviesList from '../src/components/MovieList/SelectedMoviesList';
+import { getDoc, updateDoc } from 'firebase/firestore';
 
-interface StoredMovie {
-  kinopoiskId: number;
-  nameRu: string;
-  posterUrlPreview: string;
-  year: string;
-  genres: { genre: string }[];
-  ratingKinopoisk: number;
-}
+jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn(() => ({})),
+  getDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  doc: jest.fn(() => ({})),
+}));
 
-const mockLocalStorage = (movies: { [key: string]: StoredMovie }) => {
-  const fakeLocalStorage = {
-    getItem: jest.fn().mockImplementation((key) => {
-      return key === 'selectedMovies' ? JSON.stringify(movies) : null;
-    }),
-    setItem: jest.fn(),
-    removeItem: jest.fn(),
-    clear: jest.fn(),
-  };
-  Object.defineProperty(window, 'localStorage', { value: fakeLocalStorage });
+jest.mock('../src/hooks/UseAuth', () => ({
+  useAuth: () => ({
+    currentUser: { uid: 'testUserId' },
+  }),
+}));
+
+const mockMovies: MovieSelect[] = [
+  {
+    kinopoiskId: 1,
+    filmId: 1,
+    nameRu: 'Selected Movie 1',
+    posterUrlPreview: 'url1',
+    year: '2020',
+    countries: [{ country: 'USA' }],
+    genres: [{ genre: 'Comedy' }],
+    ratingKinopoisk: 7.5,
+    rating: '7.5',
+    normalizedRating: '8.0',
+    ratingImdb: 8.0,
+  },
+  {
+    kinopoiskId: 2,
+    filmId: 2,
+    nameRu: 'Selected Movie 2',
+    posterUrlPreview: 'url2',
+    year: '2021',
+    countries: [{ country: 'UK' }],
+    genres: [{ genre: 'Drama' }],
+    ratingKinopoisk: 8.0,
+    rating: '8.0',
+    normalizedRating: '8.0',
+    ratingImdb: 8.0,
+  },
+];
+
+const mockGetDocResponse = {
+  exists: () => true,
+  data: () => ({
+    movies: mockMovies.reduce(
+      (acc: Record<string, MovieSelect>, movie: MovieSelect) => {
+        if (movie.filmId !== undefined) {
+          acc[movie.filmId.toString()] = movie;
+        }
+        return acc;
+      },
+      {},
+    ),
+  }),
 };
 
-describe('SelectedMoviesList Component', () => {
+describe('SelectedMoviesList', () => {
   beforeEach(() => {
-    window.localStorage.clear();
+    (getDoc as jest.Mock).mockResolvedValue(mockGetDocResponse);
+    jest.clearAllMocks();
   });
 
-  test('отображает фильмы из localStorage', () => {
-    const storedMovies = {
-      '1': {
-        kinopoiskId: 1,
-        nameRu: 'Тестовый фильм',
-        posterUrlPreview: 'test-url.jpg',
-        year: '2021',
-        genres: [{ genre: 'Комедия' }],
-        ratingKinopoisk: 8.0,
-      },
-    };
-    mockLocalStorage(storedMovies);
+  it('renders a list of selected movies', async () => {
+    render(<SelectedMoviesList currentPage={1} moviesPerPage={2} />);
 
-    const { getByText } = render(
-      <SelectedMoviesList currentPage={1} moviesPerPage={10} />,
-    );
-
-    expect(getByText('Тестовый фильм')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Selected Movie 1')).toBeInTheDocument();
+      expect(screen.getByText('Selected Movie 2')).toBeInTheDocument();
+    });
   });
 
-  test('удаляет фильм из списка и обновляет localStorage', () => {
-    const storedMovies = {
-      '1': {
-        kinopoiskId: 1,
-        nameRu: 'Тестовый фильм',
-        posterUrlPreview: 'test-url.jpg',
-        year: '2021',
-        genres: [{ genre: 'Комедия' }],
-        ratingKinopoisk: 8.0,
-      },
-    };
-    mockLocalStorage(storedMovies);
-
-    const { getByText, queryByText } = render(
-      <SelectedMoviesList currentPage={1} moviesPerPage={10} />,
+  it('handles movie removal correctly', async () => {
+    render(<SelectedMoviesList currentPage={1} moviesPerPage={2} />);
+    await waitFor(() =>
+      expect(screen.getByText('Selected Movie 1')).toBeInTheDocument(),
     );
 
-    fireEvent.click(getByText('✕'));
-    expect(queryByText('Тестовый фильм')).toBeNull();
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      'selectedMovies',
-      expect.any(String),
-    );
+    const removeButton = screen.getAllByText('✕')[0];
+    fireEvent.click(removeButton);
+
+    await waitFor(() => {
+      expect(updateDoc).toHaveBeenCalled();
+    });
   });
 });

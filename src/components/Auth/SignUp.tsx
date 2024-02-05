@@ -12,5 +12,11 @@ export const SignUp = () => {
       .catch((error) => alert(error.message));
   };
 
-  return <Form title="регистрация" handleClick={handleSignUp} />;
+  return (
+    <Form
+      title="регистрация"
+      handleClick={handleSignUp}
+      data-testid="signup-form"
+    />
+  );
 };
