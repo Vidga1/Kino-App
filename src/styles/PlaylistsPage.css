@@ -1,0 +1,70 @@
+.playlists-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.playlists-page-container h1 {
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .playlists-page-container h1 {
+    margin-top: 5%;
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  .back-button {
+    right: 10px;
+    top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .playlists-page-container h1 {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  padding: 10px 15px;
+  background-color: #f05454;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #d43f3f;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 768px) {
+  .back-button {
+    right: 40px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-button {
+    top: 10px;
+    right: 20px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+.playlists-page .movie__title {
+  cursor: default;
+}

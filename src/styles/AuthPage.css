@@ -1,0 +1,23 @@
+.authPageTitle {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  color: rgb(6, 6, 58);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .authPageTitle {
+    font-size: 25px;
+    margin-top: 27%;
+  }
+}
+
+@media (max-width: 480px) {
+  .authPageTitle {
+    font-size: 20px;
+    top: 20%;
+  }
+}
