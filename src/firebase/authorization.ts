@@ -14,7 +14,6 @@ export const login = async (email: string, password: string): Promise<void> => {
       email,
       password,
     );
-    console.log('Успешный вход:', userCredential.user);
   } catch (error) {
     if (error instanceof Error) {
       throw new Error('Ошибка при входе: ' + error.message);
@@ -35,7 +34,6 @@ export const createUser = async (
       email,
       password,
     );
-    console.log('Успешная регистрация:', userCredential.user);
   } catch (error) {
     if (error instanceof Error) {
       throw new Error('Ошибка при регистрации: ' + error.message);

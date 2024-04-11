@@ -33,7 +33,6 @@ export const loadSelectedMovies = async (
     >;
     return { selectedMovies, ratings };
   } else {
-    console.log('Нет сохраненных фильмов или рейтингов');
     return { selectedMovies: {}, ratings: {} };
   }
 };
