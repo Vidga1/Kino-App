@@ -2,6 +2,9 @@ import webpack from 'webpack';
 import { resolve } from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import 'webpack-dev-server';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 type Mode = 'none' | 'development' | 'production' | undefined;
 
@@ -55,6 +58,15 @@ const config: webpack.Configuration = {
     new webpack.DefinePlugin({
       PRODUCTION: JSON.stringify(NODE_ENV === 'production'),
       PREFIX: JSON.stringify(PREFIX),
+      'process.env': {
+        API_KEY: JSON.stringify(process.env.API_KEY),
+        AUTH_DOMAIN: JSON.stringify(process.env.AUTH_DOMAIN),
+        PROJECT_ID: JSON.stringify(process.env.PROJECT_ID),
+        STORAGE_BUCKET: JSON.stringify(process.env.STORAGE_BUCKET),
+        MESSAGING_SENDER_ID: JSON.stringify(process.env.MESSAGING_SENDER_ID),
+        APP_ID: JSON.stringify(process.env.APP_ID),
+        MEASUREMENT_ID: JSON.stringify(process.env.MEASUREMENT_ID),
+      },
     }),
   ],
   devServer: {
