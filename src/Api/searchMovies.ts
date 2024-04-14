@@ -16,7 +16,6 @@ export const fetchMoviesByTitle = async (title: string, page = 1) => {
   const maxPages = 20;
   const limitedPagesCount = Math.min(data.pagesCount, maxPages);
 
-  console.log('Результаты поиска:', data.films);
   return {
     films: data.films,
     pagesCount: limitedPagesCount,
@@ -34,8 +33,6 @@ export const fetchMoviesByFilters = async (filters: Filters, page = 1) => {
     }
   });
 
-  console.log('URL запроса:', url.toString());
-
   const response = await fetch(url.toString(), {
     headers: {
       'Content-Type': 'application/json',
@@ -48,8 +45,6 @@ export const fetchMoviesByFilters = async (filters: Filters, page = 1) => {
   }
 
   const data = await response.json();
-  console.log('Статус ответа:', response.status);
-  console.log('Ответ сервера:', data);
 
   return {
     films: data.items,

@@ -9,12 +9,7 @@ const auth = getAuth(app);
 
 export const login = async (email: string, password: string): Promise<void> => {
   try {
-    const userCredential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    );
-    console.log('Успешный вход:', userCredential.user);
+    await signInWithEmailAndPassword(auth, email, password);
   } catch (error) {
     if (error instanceof Error) {
       throw new Error('Ошибка при входе: ' + error.message);
@@ -30,12 +25,7 @@ export const createUser = async (
   password: string,
 ): Promise<void> => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    );
-    console.log('Успешная регистрация:', userCredential.user);
+    await createUserWithEmailAndPassword(auth, email, password);
   } catch (error) {
     if (error instanceof Error) {
       throw new Error('Ошибка при регистрации: ' + error.message);
