@@ -88,7 +88,6 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
         data-testid="filterSearchForm"
         onSubmit={handleSearchByFilters}
       >
-        {/* Страны */}
         <select
           id="countrySelect"
           name="countrySelect"
@@ -106,7 +105,6 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           ))}
         </select>
 
-        {/* Жанры */}
         <select
           id="genreSelect"
           name="genreSelect"
@@ -124,7 +122,6 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           ))}
         </select>
 
-        {/* Сортировка */}
         <select
           id="orderSelect"
           name="orderSelect"
@@ -140,7 +137,6 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           <option value="YEAR">По годам</option>
         </select>
 
-        {/* Тип */}
         <select
           id="typeSelect"
           name="typeSelect"
@@ -158,7 +154,6 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           <option value="MINI_SERIES">Мини-сериал</option>
         </select>
 
-        {/* Рейтинг */}
         <input
           type="number"
           id="ratingFrom"
@@ -177,8 +172,6 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
           value={ratingTo}
           onChange={(e) => setRatingTo(e.target.value)}
         />
-
-        {/* Год */}
         <input
           type="number"
           id="yearFrom"

@@ -3,13 +3,7 @@ import { resolve } from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import 'webpack-dev-server';
 import dotenv from 'dotenv';
-
 dotenv.config();
-
-type Mode = 'none' | 'development' | 'production' | undefined;
-
-const NODE_ENV: Mode = process.env.NODE_ENV as Mode;
-const PREFIX = process.env.PREFIX || '/';
 
 const config: webpack.Configuration = {
   entry: './src/index.tsx',
@@ -56,8 +50,6 @@ const config: webpack.Configuration = {
       filename: '404.html',
     }),
     new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(NODE_ENV === 'production'),
-      PREFIX: JSON.stringify(PREFIX),
       'process.env': {
         API_KEY: JSON.stringify(process.env.API_KEY),
         AUTH_DOMAIN: JSON.stringify(process.env.AUTH_DOMAIN),
@@ -65,7 +57,8 @@ const config: webpack.Configuration = {
         STORAGE_BUCKET: JSON.stringify(process.env.STORAGE_BUCKET),
         MESSAGING_SENDER_ID: JSON.stringify(process.env.MESSAGING_SENDER_ID),
         APP_ID: JSON.stringify(process.env.APP_ID),
-        MEASUREMENT_ID: JSON.stringify(process.env.MEASUREMENT_ID),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        PREFIX: JSON.stringify(process.env.PREFIX),
       },
     }),
   ],

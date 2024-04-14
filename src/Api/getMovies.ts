@@ -14,7 +14,6 @@ export const fetchMovies = async (
     throw new Error(`Ошибка HTTP: ${response.status}`);
   }
   const data = await response.json();
-  console.log('Полученные фильмы:', data.films);
   return {
     films: data.films,
     pagesCount: data.pagesCount,

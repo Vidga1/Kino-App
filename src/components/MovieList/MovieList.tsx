@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getClassByRate } from '../../helpers/getClassByRate';
 import { useAuth } from '../../hooks/UseAuth';
 import { db } from '../../firebase/firebaseConfig';
-import { collection, doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import '../../styles/MovieList.css';
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
