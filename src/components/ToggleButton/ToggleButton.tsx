@@ -1,4 +1,3 @@
-// src/components/AuthModeToggle/AuthModeToggle.tsx
 import React from 'react';
 import { ToggleButtonGroup, ToggleButton } from '@mui/material';
 

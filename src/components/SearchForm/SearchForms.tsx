@@ -6,37 +6,83 @@ import {
 } from '../../Api/searchMovies';
 import { useNavigate } from 'react-router-dom';
 import { resetFilters } from '../../helpers/resetFilters';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Paper,
+  SelectChangeEvent,
+  ToggleButton,
+  ToggleButtonGroup,
+  Stack,
+} from '@mui/material';
+
+interface Country {
+  id: string;
+  country: string;
+}
+
+interface Genre {
+  id: string;
+  genre: string;
+}
+
+interface FilterOptions {
+  countries: Country[];
+  genres: Genre[];
+}
+
+interface SearchFilterFormProps {
+  onSearchResults: (
+    movies: Movie[],
+    pagesCount: number,
+    filters: Record<string, string>,
+  ) => void;
+}
 
 const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
   const navigate = useNavigate();
   const [countries, setCountries] = useState<Country[]>([]);
   const [genres, setGenres] = useState<Genre[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedGenre, setSelectedGenre] = useState('');
-  const [selectedOrder, setSelectedOrder] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [ratingFrom, setRatingFrom] = useState('');
-  const [ratingTo, setRatingTo] = useState('');
-  const [yearFrom, setYearFrom] = useState('');
-  const [yearTo, setYearTo] = useState('');
+
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedCountry, setSelectedCountry] = useState<string>('');
+  const [selectedGenre, setSelectedGenre] = useState<string>('');
+  const [selectedOrder, setSelectedOrder] = useState<string>('');
+  const [selectedType, setSelectedType] = useState<string>('');
+  const [ratingFrom, setRatingFrom] = useState<string>('');
+  const [ratingTo, setRatingTo] = useState<string>('');
+  const [yearFrom, setYearFrom] = useState<string>('');
+  const [yearTo, setYearTo] = useState<string>('');
+
+  const [searchMode, setSearchMode] = useState<'filters' | 'keyword'>(
+    'filters',
+  );
 
   useEffect(() => {
     const loadFilters = async () => {
-      const data: FilterOptions = await loadFilterOptions();
-      if (data) {
-        const sortedCountries = data.countries
-          .filter((country: Country) => country.country.trim() !== '')
-          .sort((a: Country, b: Country) =>
-            a.country.localeCompare(b.country, 'ru'),
-          );
+      try {
+        const data: FilterOptions = await loadFilterOptions();
+        if (data) {
+          const sortedCountries = data.countries
+            .filter((country: Country) => country.country.trim() !== '')
+            .sort((a: Country, b: Country) =>
+              a.country.localeCompare(b.country, 'ru'),
+            );
 
-        const sortedGenres = data.genres
-          .filter((genre: Genre) => genre.genre.trim() !== '')
-          .sort((a: Genre, b: Genre) => a.genre.localeCompare(b.genre, 'ru'));
+          const sortedGenres = data.genres
+            .filter((genre: Genre) => genre.genre.trim() !== '')
+            .sort((a: Genre, b: Genre) => a.genre.localeCompare(b.genre, 'ru'));
 
-        setCountries(sortedCountries);
-        setGenres(sortedGenres);
+          setCountries(sortedCountries);
+          setGenres(sortedGenres);
+        }
+      } catch (error) {
+        console.error('Ошибка при загрузке фильтров:', error);
       }
     };
 
@@ -50,8 +96,8 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
     try {
       const { films, pagesCount } = await fetchMoviesByTitle(searchTerm);
       onSearchResults(films, pagesCount, { keyword: searchTerm });
-      setSearchTerm('');
       navigate(`/search?query=${encodeURIComponent(searchTerm)}`);
+      setSearchTerm('');
     } catch (error) {
       console.error('Ошибка при поиске:', error);
     }
@@ -61,7 +107,7 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
     event: React.FormEvent<HTMLFormElement>,
   ) => {
     event.preventDefault();
-    const filters = {
+    const filters: Record<string, string> = {
       countries: selectedCountry,
       genres: selectedGenre,
       order: selectedOrder,
@@ -81,145 +127,335 @@ const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
     }
   };
 
+  const handleModeChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newMode: 'filters' | 'keyword' | null,
+  ) => {
+    if (newMode) {
+      setSearchMode(newMode);
+    }
+  };
+
+  const commonFieldStyles = {
+    flex: '1 1 auto',
+    minWidth: 0,
+  };
+
   return (
-    <div className="search-container">
-      <form
-        id="filterSearchForm"
-        data-testid="filterSearchForm"
-        onSubmit={handleSearchByFilters}
+    <Box sx={{ mb: 3, width: '100%' }}>
+      <Paper
+        elevation={3}
+        sx={{ p: 3, bgcolor: '#1e293b', borderRadius: 2, color: '#ffffff' }}
       >
-        <select
-          id="countrySelect"
-          name="countrySelect"
-          className="filter"
-          value={selectedCountry}
-          onChange={(e) => setSelectedCountry(e.target.value)}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            mb: 3,
+          }}
         >
-          <option value="" disabled hidden>
-            Выберите страну
-          </option>
-          {countries.map((country) => (
-            <option key={country.id} value={country.id}>
-              {country.country}
-            </option>
-          ))}
-        </select>
+          <ToggleButtonGroup
+            value={searchMode}
+            exclusive
+            onChange={handleModeChange}
+            color="primary"
+            sx={{
+              '& .MuiToggleButton-root': {
+                borderColor: '#ffffff33',
+                color: '#ffffffcc',
+              },
+              '& .MuiToggleButton-root.Mui-selected': {
+                backgroundColor: '#ffffff22',
+                borderColor: '#ffffff88',
+                color: '#ffffff',
+              },
+              '& .MuiToggleButton-root:hover': {
+                backgroundColor: '#ffffff11',
+              },
+            }}
+          >
+            <ToggleButton value="filters">Поиск по фильтрам</ToggleButton>
+            <ToggleButton value="keyword">Поиск по названию</ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
 
-        <select
-          id="genreSelect"
-          name="genreSelect"
-          className="filter"
-          value={selectedGenre}
-          onChange={(e) => setSelectedGenre(e.target.value)}
-        >
-          <option value="" disabled hidden>
-            Выберите жанр
-          </option>
-          {genres.map((genre) => (
-            <option key={genre.id} value={genre.id}>
-              {genre.genre}
-            </option>
-          ))}
-        </select>
+        {searchMode === 'filters' && (
+          <Stack spacing={2}>
+            <Box
+              component="form"
+              id="filterSearchForm"
+              onSubmit={handleSearchByFilters}
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <FormControl
+                size="small"
+                sx={{ ...commonFieldStyles, maxWidth: 150 }}
+              >
+                <InputLabel sx={{ color: '#ffffff' }}>Страна</InputLabel>
+                <Select
+                  value={selectedCountry}
+                  label="Страна"
+                  onChange={(e: SelectChangeEvent<string>) =>
+                    setSelectedCountry(e.target.value)
+                  }
+                  sx={{
+                    color: '#ffffff',
+                    '& .MuiSvgIcon-root': { color: '#ffffff' },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>Выберите страну</em>
+                  </MenuItem>
+                  {countries.map((country) => (
+                    <MenuItem key={country.id} value={country.id}>
+                      {country.country}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
-        <select
-          id="orderSelect"
-          name="orderSelect"
-          className="filter"
-          value={selectedOrder}
-          onChange={(e) => setSelectedOrder(e.target.value)}
-        >
-          <option value="" disabled hidden>
-            Сортировка
-          </option>
-          <option value="RATING">По рейтингу</option>
-          <option value="NUM_VOTE">По оценкам</option>
-          <option value="YEAR">По годам</option>
-        </select>
+              <FormControl
+                size="small"
+                sx={{ ...commonFieldStyles, maxWidth: 150 }}
+              >
+                <InputLabel sx={{ color: '#ffffff' }}>Жанр</InputLabel>
+                <Select
+                  value={selectedGenre}
+                  label="Жанр"
+                  onChange={(e: SelectChangeEvent<string>) =>
+                    setSelectedGenre(e.target.value)
+                  }
+                  sx={{
+                    color: '#ffffff',
+                    '& .MuiSvgIcon-root': { color: '#ffffff' },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>Выберите жанр</em>
+                  </MenuItem>
+                  {genres.map((genre) => (
+                    <MenuItem key={genre.id} value={genre.id}>
+                      {genre.genre}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
-        <select
-          id="typeSelect"
-          name="typeSelect"
-          className="filter"
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-        >
-          <option value="" disabled hidden>
-            Тип
-          </option>
-          <option value="ALL">Все</option>
-          <option value="FILM">Фильм</option>
-          <option value="TV_SHOW">ТВ шоу</option>
-          <option value="TV_SERIES">ТВ сериал</option>
-          <option value="MINI_SERIES">Мини-сериал</option>
-        </select>
+              <FormControl
+                size="small"
+                sx={{ ...commonFieldStyles, maxWidth: 150 }}
+              >
+                <InputLabel sx={{ color: '#ffffff' }}>Сортировка</InputLabel>
+                <Select
+                  value={selectedOrder}
+                  label="Сортировка"
+                  onChange={(e: SelectChangeEvent<string>) =>
+                    setSelectedOrder(e.target.value)
+                  }
+                  sx={{
+                    color: '#ffffff',
+                    '& .MuiSvgIcon-root': { color: '#ffffff' },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>Сортировка</em>
+                  </MenuItem>
+                  <MenuItem value="RATING">По рейтингу</MenuItem>
+                  <MenuItem value="NUM_VOTE">По оценкам</MenuItem>
+                  <MenuItem value="YEAR">По годам</MenuItem>
+                </Select>
+              </FormControl>
 
-        <input
-          type="number"
-          id="ratingFrom"
-          name="ratingFrom"
-          className="filter smaller-input"
-          placeholder="Рейтинг от"
-          value={ratingFrom}
-          onChange={(e) => setRatingFrom(e.target.value)}
-        />
-        <input
-          type="number"
-          id="ratingTo"
-          name="ratingTo"
-          className="filter smaller-input"
-          placeholder="Рейтинг до"
-          value={ratingTo}
-          onChange={(e) => setRatingTo(e.target.value)}
-        />
-        <input
-          type="number"
-          id="yearFrom"
-          name="yearFrom"
-          className="filter smaller-input"
-          placeholder="Год от"
-          value={yearFrom}
-          onChange={(e) => setYearFrom(e.target.value)}
-        />
-        <input
-          type="number"
-          id="yearTo"
-          name="yearTo"
-          className="filter smaller-input"
-          placeholder="Год до"
-          value={yearTo}
-          onChange={(e) => setYearTo(e.target.value)}
-        />
-        <button type="submit">Поиск по фильтрам</button>
-        <button
-          type="button"
-          onClick={() =>
-            resetFilters({
-              setSearchTerm,
-              setSelectedCountry,
-              setSelectedGenre,
-              setSelectedOrder,
-              setSelectedType,
-              setRatingFrom,
-              setRatingTo,
-              setYearFrom,
-              setYearTo,
-            })
-          }
-        >
-          Сбросить фильтры
-        </button>
-      </form>
-      <form onSubmit={handleSearchByName} style={{ marginTop: '10px' }}>
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Введите название"
-        />
-        <button type="submit">Поиск по названию</button>
-      </form>
-    </div>
+              <FormControl
+                size="small"
+                sx={{ ...commonFieldStyles, maxWidth: 150 }}
+              >
+                <InputLabel sx={{ color: '#ffffff' }}>Тип</InputLabel>
+                <Select
+                  value={selectedType}
+                  label="Тип"
+                  onChange={(e: SelectChangeEvent<string>) =>
+                    setSelectedType(e.target.value)
+                  }
+                  sx={{
+                    color: '#ffffff',
+                    '& .MuiSvgIcon-root': { color: '#ffffff' },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>Тип</em>
+                  </MenuItem>
+                  <MenuItem value="ALL">Все</MenuItem>
+                  <MenuItem value="FILM">Фильм</MenuItem>
+                  <MenuItem value="TV_SHOW">ТВ шоу</MenuItem>
+                  <MenuItem value="TV_SERIES">ТВ сериал</MenuItem>
+                  <MenuItem value="MINI_SERIES">Мини-сериал</MenuItem>
+                </Select>
+              </FormControl>
+
+              <TextField
+                type="number"
+                label="Рейтинг от"
+                value={ratingFrom}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setRatingFrom(e.target.value)
+                }
+                size="small"
+                sx={{
+                  ...commonFieldStyles,
+                  maxWidth: 100,
+                  input: { color: '#ffffff' },
+                  '& .MuiInputLabel-root': { color: '#ffffff' },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ffffff88',
+                  },
+                }}
+              />
+
+              <TextField
+                type="number"
+                label="Рейтинг до"
+                value={ratingTo}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setRatingTo(e.target.value)
+                }
+                size="small"
+                sx={{
+                  ...commonFieldStyles,
+                  maxWidth: 100,
+                  input: { color: '#ffffff' },
+                  '& .MuiInputLabel-root': { color: '#ffffff' },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ffffff88',
+                  },
+                }}
+              />
+
+              <TextField
+                type="number"
+                label="Год от"
+                value={yearFrom}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setYearFrom(e.target.value)
+                }
+                size="small"
+                sx={{
+                  ...commonFieldStyles,
+                  maxWidth: 100,
+                  input: { color: '#ffffff' },
+                  '& .MuiInputLabel-root': { color: '#ffffff' },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ffffff88',
+                  },
+                }}
+              />
+
+              <TextField
+                type="number"
+                label="Год до"
+                value={yearTo}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setYearTo(e.target.value)
+                }
+                size="small"
+                sx={{
+                  ...commonFieldStyles,
+                  maxWidth: 100,
+                  input: { color: '#ffffff' },
+                  '& .MuiInputLabel-root': { color: '#ffffff' },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ffffff88',
+                  },
+                }}
+              />
+
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{ minWidth: 100, flexShrink: 0 }}
+              >
+                Поиск
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                type="button"
+                onClick={() =>
+                  resetFilters({
+                    setSearchTerm,
+                    setSelectedCountry,
+                    setSelectedGenre,
+                    setSelectedOrder,
+                    setSelectedType,
+                    setRatingFrom,
+                    setRatingTo,
+                    setYearFrom,
+                    setYearTo,
+                  })
+                }
+                sx={{
+                  minWidth: 100,
+                  flexShrink: 0,
+                  borderColor: '#ffffff88',
+                  color: '#ffffff',
+                }}
+              >
+                Сброс
+              </Button>
+            </Box>
+          </Stack>
+        )}
+
+        {searchMode === 'keyword' && (
+          <Box
+            component="form"
+            onSubmit={handleSearchByName}
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              gap: 2,
+              mt: 2,
+              color: '#ffffff',
+            }}
+          >
+            <TextField
+              variant="outlined"
+              label="Введите название"
+              value={searchTerm}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setSearchTerm(e.target.value)
+              }
+              size="small"
+              sx={{
+                minWidth: 200,
+                input: { color: '#ffffff' },
+                '& .MuiInputLabel-root': { color: '#ffffff' },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#ffffff88',
+                },
+              }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              sx={{ minWidth: 80 }}
+            >
+              Поиск
+            </Button>
+          </Box>
+        )}
+      </Paper>
+    </Box>
   );
 };
+
 export default SearchForms;

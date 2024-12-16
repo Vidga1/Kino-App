@@ -1,6 +1,5 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './components/Auth/AuthContext';
 import HomePage from './pages/Main/Main';
 import PlaylistsPage from './pages/Playlists/Playlists';
 import AuthPage from './pages/Auth/Auth';
@@ -11,6 +10,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
         <Route path="home" element={<HomePage />} />
         <Route path="about" element={<AboutPage />} />
         <Route path="playlists" element={<PlaylistsPage />} />
@@ -23,5 +23,4 @@ function App() {
     </Routes>
   );
 }
-
 export default App;
