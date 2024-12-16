@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import '../styles/AboutPage.css';
 import { Link } from 'react-router-dom';
 
 const AboutPage = () => {

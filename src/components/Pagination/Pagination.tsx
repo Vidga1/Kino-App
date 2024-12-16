@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../styles/Pagination.css';
 
 const Pagination: React.FC<PaginationProps> = ({
   totalPages,

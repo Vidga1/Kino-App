@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import Header from '../components/Header/Header';
-import MovieList from '../components/MovieList/MovieList';
-import Modal from '../components/Modal/Modal';
-import { fetchMovies, fetchMovieDetails } from '../Api/getMovies';
-import Pagination from '../components/Pagination/Pagination';
-import SearchForms from '../components/Header/SearchForms';
-import { fetchMoviesByTitle, fetchMoviesByFilters } from '../Api/searchMovies';
+import {
+  fetchMoviesByTitle,
+  fetchMoviesByFilters,
+} from '../../Api/searchMovies';
+import Header from '../../components/Header/Header';
+import SearchForms from '../../components/SearchForm/SearchForms';
+import MovieList from '../../components/MovieList/MovieList';
+import Modal from '../../components/Modal/Modal';
+import Pagination from '../../components/Pagination/Pagination';
+import { fetchMovieDetails, fetchMovies } from '../../Api/getMovies';
 
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);

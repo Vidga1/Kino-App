@@ -6,10 +6,10 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { AuthProvider } from './components/Auth/AuthContext';
-import HomePage from './pages/HomePage';
-import PlaylistsPage from './pages/PlaylistsPage';
-import AuthPage from './pages/AuthPage';
-import AboutPage from './pages/AboutPage';
+import HomePage from './pages/Main/Main';
+import PlaylistsPage from './pages/Playlists/Playlists';
+import AuthPage from './pages/Auth/Auth';
+import AboutPage from './pages/About/About';
 
 function App() {
   return (

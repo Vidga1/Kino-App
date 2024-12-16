@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import SelectedMoviesList from '../components/MovieList/SelectedMoviesList';
-import '../styles/PlaylistsPage.css';
-import Pagination from '../components/Pagination/Pagination';
-import { useAuth } from '../hooks/UseAuth';
-import { db } from '../firebase/firebaseConfig';
+import SelectedMoviesList from '../../components/SelectedMoviesList/SelectedMoviesList';
+import Pagination from '../../components/Pagination/Pagination';
+import { useAuth } from '../../hooks/UseAuth';
+import { db } from '../../firebase/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 
 const PlaylistsPage: React.FC = () => {

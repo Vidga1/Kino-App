@@ -3,7 +3,6 @@ import { getClassByRate } from '../../helpers/getClassByRate';
 import { useAuth } from '../../hooks/UseAuth';
 import { db } from '../../firebase/firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import '../../styles/MovieList.css';
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
   const { currentUser } = useAuth();

@@ -1,5 +1,4 @@
 import React from 'react';
-import '../../styles/Modal.css';
 
 const Modal: React.FC<ModalProps> = ({ movie, onClose, isModalOpen }) => {
   return (
