@@ -10,6 +10,20 @@ import Modal from '../../components/Modal/Modal';
 import Pagination from '../../components/Pagination/Pagination';
 import { fetchMovieDetails, fetchMovies } from '../../Api/getMovies';
 
+// Функция для удаления дубликатов вынесена за пределы компонента
+function deduplicateMovies(films: Movie[]): Movie[] {
+  const seen = new Set<number>();
+  const unique: Movie[] = [];
+  for (const f of films) {
+    const id = f.kinopoiskId || f.filmId;
+    if (id && !seen.has(id)) {
+      seen.add(id);
+      unique.push(f);
+    }
+  }
+  return unique;
+}
+
 const HomePage: React.FC = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [selectedMovie, setSelectedMovie] = useState<MovieDetails | null>(null);
@@ -42,20 +56,7 @@ const HomePage: React.FC = () => {
     };
   }, [isModalOpen]);
 
-  const deduplicateMovies = (films: Movie[]) => {
-    const seen = new Set<number>();
-    const unique: Movie[] = [];
-    for (const f of films) {
-      const id = f.kinopoiskId || f.filmId;
-      if (id && !seen.has(id)) {
-        seen.add(id);
-        unique.push(f);
-      }
-    }
-    return unique;
-  };
-
-  const getCacheKey = () => {
+  const getCacheKey = useCallback(() => {
     const searchParamsObj = new URLSearchParams(location.search);
 
     if (location.pathname.includes('/filters')) {
@@ -71,47 +72,50 @@ const HomePage: React.FC = () => {
     } else {
       return 'popular';
     }
-  };
+  }, [location]);
 
-  const loadMoviesPage = async (page: number) => {
-    const cacheKey = getCacheKey();
-    if (!cacheRef.current.has(cacheKey)) {
-      cacheRef.current.set(cacheKey, new Map());
-    }
-    const pageCache = cacheRef.current.get(cacheKey)!;
+  const loadMoviesPage = useCallback(
+    async (page: number) => {
+      const cacheKey = getCacheKey();
+      if (!cacheRef.current.has(cacheKey)) {
+        cacheRef.current.set(cacheKey, new Map());
+      }
+      const pageCache = cacheRef.current.get(cacheKey)!;
 
-    if (pageCache.has(page)) {
-      return pageCache.get(page)!;
-    }
+      if (pageCache.has(page)) {
+        return pageCache.get(page)!;
+      }
 
-    const searchParamsObj = new URLSearchParams(location.search);
-    let response;
+      const searchParamsObj = new URLSearchParams(location.search);
+      let response;
 
-    if (location.pathname.includes('/filters')) {
-      const filters = Object.fromEntries(searchParamsObj.entries());
-      response = await fetchMoviesByFilters(filters, page);
-    } else if (
-      location.pathname.includes('/search') &&
-      searchParamsObj.has('query')
-    ) {
-      const query = searchParamsObj.get('query') || '';
-      response = await fetchMoviesByTitle(query, page);
-    } else {
-      response = await fetchMovies(page);
-    }
+      if (location.pathname.includes('/filters')) {
+        const filters = Object.fromEntries(searchParamsObj.entries());
+        response = await fetchMoviesByFilters(filters, page);
+      } else if (
+        location.pathname.includes('/search') &&
+        searchParamsObj.has('query')
+      ) {
+        const query = searchParamsObj.get('query') || '';
+        response = await fetchMoviesByTitle(query, page);
+      } else {
+        response = await fetchMovies(page);
+      }
 
-    setTotalPages(response.pagesCount);
-    const uniqueFilms = deduplicateMovies(response.films);
-    pageCache.set(page, uniqueFilms);
-    return uniqueFilms;
-  };
+      setTotalPages(response.pagesCount);
+      const uniqueFilms = deduplicateMovies(response.films);
+      pageCache.set(page, uniqueFilms);
+      return uniqueFilms;
+    },
+    [getCacheKey, location], // Добавили getCacheKey и location в зависимости
+  );
 
   useEffect(() => {
     (async () => {
       const films = await loadMoviesPage(currentPage);
       setMovies(films);
     })();
-  }, [currentPage, location]);
+  }, [currentPage, location, loadMoviesPage]); // Добавили loadMoviesPage в зависимости
 
   const handleMovieSelect = useCallback(async (movie: Movie) => {
     const movieId = movie.kinopoiskId || movie.filmId;
