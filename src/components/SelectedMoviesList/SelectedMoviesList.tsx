@@ -113,6 +113,13 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
           const ratingValue = movie.ratingKinopoisk || movie.rating || 'Н/Д';
           let ratingColor: 'success' | 'warning' | 'error' | 'default' =
             'default';
+          let chipStyles: React.CSSProperties = {
+            position: 'absolute',
+            top: 8,
+            left: 8,
+            fontWeight: 'bold',
+          };
+
           if (ratingValue !== 'Н/Д') {
             const numericRating = Number(ratingValue);
             if (!isNaN(numericRating)) {
@@ -120,6 +127,13 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
               else if (numericRating >= 5) ratingColor = 'warning';
               else ratingColor = 'error';
             }
+          } else {
+            ratingColor = 'default';
+            chipStyles = {
+              ...chipStyles,
+              backgroundColor: '#fff',
+              color: '#000',
+            };
           }
 
           return (
@@ -130,7 +144,7 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
                   xs: '100%',
                   sm: 'calc(50% - 24px)',
                   md: 'calc(33.333% - 24px)',
-                  lg: 'calc(25% - 24px)', // 4 в ряд на больших экранах
+                  lg: 'calc(25% - 24px)',
                 },
               }}
             >
@@ -155,10 +169,17 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
                     sx={{
                       height: 300,
                       objectFit: 'contain',
-                      bgcolor: '#000', // тёмный фон под постером
+                      bgcolor: '#000',
                     }}
                   />
                 )}
+
+                <Chip
+                  label={`Рейтинг: ${ratingValue}`}
+                  color={ratingColor}
+                  variant="filled"
+                  style={chipStyles}
+                />
 
                 <Button
                   variant="contained"
@@ -218,14 +239,6 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
                         Смотреть
                       </Button>
                     </Link>
-                    <Chip
-                      label={`Рейтинг: ${ratingValue}`}
-                      color={ratingColor}
-                      variant="filled"
-                      sx={{
-                        fontWeight: 'bold',
-                      }}
-                    />
                   </Box>
                 </CardContent>
               </Card>

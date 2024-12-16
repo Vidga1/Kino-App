@@ -99,6 +99,13 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
 
           let ratingColor: 'success' | 'warning' | 'error' | 'default' =
             'default';
+          let chipStyles: React.CSSProperties = {
+            position: 'absolute',
+            top: 8,
+            left: 8,
+            fontWeight: 'bold',
+          };
+
           if (rating !== 'Н/Д') {
             const numericRating = Number(rating);
             if (!isNaN(numericRating)) {
@@ -106,6 +113,14 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
               else if (numericRating >= 5) ratingColor = 'warning';
               else ratingColor = 'error';
             }
+          } else {
+            // Нет рейтинга, делаем чип белым с чёрным текстом
+            ratingColor = 'default';
+            chipStyles = {
+              ...chipStyles,
+              backgroundColor: '#fff',
+              color: '#000',
+            };
           }
 
           return (
@@ -116,7 +131,7 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
                   xs: '100%',
                   sm: 'calc(50% - 24px)',
                   md: 'calc(33.333% - 24px)',
-                  lg: 'calc(25% - 24px)', // 4 в ряд на больших экранах
+                  lg: 'calc(25% - 24px)',
                 },
               }}
             >
@@ -141,10 +156,17 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
                     sx={{
                       height: 300,
                       objectFit: 'contain',
-                      bgcolor: '#000', // тёмный фон за постером
+                      bgcolor: '#000',
                     }}
                   />
                 )}
+
+                <Chip
+                  label={`Рейтинг: ${rating}`}
+                  color={ratingColor}
+                  variant="filled"
+                  style={chipStyles}
+                />
 
                 <Button
                   variant={isSelected ? 'contained' : 'outlined'}
@@ -183,14 +205,6 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
                   <Typography variant="body2" color="#a0aec0" sx={{ mb: 1 }}>
                     Жанры: {movie.genres.map((g) => g.genre).join(', ')}
                   </Typography>
-                  <Chip
-                    label={`Рейтинг: ${rating}`}
-                    color={ratingColor}
-                    variant="filled"
-                    sx={{
-                      fontWeight: 'bold',
-                    }}
-                  />
                 </CardContent>
               </Card>
             </Box>

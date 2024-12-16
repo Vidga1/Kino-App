@@ -1,4 +1,8 @@
 export const getClassByRate = (rating: number | string) => {
+  if (rating === 'Н/Д') {
+    return 'white';
+  }
+
   if (typeof rating === 'string' && rating.endsWith('%')) {
     return 'blue';
   }
@@ -10,7 +14,7 @@ export const getClassByRate = (rating: number | string) => {
   } else if (typeof rating === 'string') {
     numericRating = parseFloat(rating);
     if (isNaN(numericRating)) {
-      return 'default';
+      return 'white';
     }
   } else {
     numericRating = null;
@@ -26,5 +30,5 @@ export const getClassByRate = (rating: number | string) => {
     }
   }
 
-  return 'default';
+  return 'white';
 };

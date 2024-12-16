@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import SelectedMoviesList from '../../components/SelectedMoviesList/SelectedMoviesList';
 import Pagination from '../../components/Pagination/Pagination';
 import { useAuth } from '../../hooks/UseAuth';
@@ -31,9 +30,6 @@ const PlaylistsPage: React.FC = () => {
 
   return (
     <div className="playlists-page-container playlists-page">
-      <Link to="/home" className="back-button">
-        Назад
-      </Link>
       <h1>Избранные фильмы</h1>
       <SelectedMoviesList
         currentPage={currentPage}
