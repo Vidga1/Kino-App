@@ -4,7 +4,6 @@ import {
   fetchMoviesByTitle,
   fetchMoviesByFilters,
 } from '../../Api/searchMovies';
-import Header from '../../components/Header/Header';
 import SearchForms from '../../components/SearchForm/SearchForms';
 import MovieList from '../../components/MovieList/MovieList';
 import Modal from '../../components/Modal/Modal';
@@ -106,7 +105,6 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
-      <Header />
       <SearchForms onSearchResults={handleSearchResults} />
       <MovieList movies={movies} onMovieSelect={handleMovieSelect} />
       {isModalOpen && selectedMovie && (

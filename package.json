@@ -7,9 +7,9 @@
     "lint": "prettier --check . && eslint . && npx tsc --noEmit",
     "lint:fix": "prettier --write . && eslint . --fix && npx tsc --noEmit",
     "prepare": "husky install",
-    "start:dev": "nodemon --watch webpack.config.ts --exec ts-node -r tsconfig-paths/register ./node_modules/webpack/bin/webpack.js serve --define-process-env-node-env development",
-    "build:dev": "webpack --define-process-env-node-env development",
-    "build": "webpack --define-process-env-node-env production",
+    "start": "nodemon --watch webpack.config.ts --exec ts-node -r tsconfig-paths/register ./node_modules/webpack/bin/webpack.js serve --define-process-env-node-env development",
+    "build": "webpack --define-process-env-node-env development",
+    "build:start": "webpack --define-process-env-node-env production",
     "check-ts": "tsc --noEmit",
     "ncu": "npm-check-updates --interactive --format group --doctor",
     "deploy": "npm run build && gh-pages -d dist"
