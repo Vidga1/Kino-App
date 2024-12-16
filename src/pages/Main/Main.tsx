@@ -10,7 +10,6 @@ import Modal from '../../components/Modal/Modal';
 import Pagination from '../../components/Pagination/Pagination';
 import { fetchMovieDetails, fetchMovies } from '../../Api/getMovies';
 
-// Функция для удаления дубликатов вынесена за пределы компонента
 function deduplicateMovies(films: Movie[]): Movie[] {
   const seen = new Set<number>();
   const unique: Movie[] = [];
@@ -107,7 +106,7 @@ const HomePage: React.FC = () => {
       pageCache.set(page, uniqueFilms);
       return uniqueFilms;
     },
-    [getCacheKey, location], // Добавили getCacheKey и location в зависимости
+    [getCacheKey, location],
   );
 
   useEffect(() => {
@@ -115,7 +114,7 @@ const HomePage: React.FC = () => {
       const films = await loadMoviesPage(currentPage);
       setMovies(films);
     })();
-  }, [currentPage, location, loadMoviesPage]); // Добавили loadMoviesPage в зависимости
+  }, [currentPage, location, loadMoviesPage]);
 
   const handleMovieSelect = useCallback(async (movie: Movie) => {
     const movieId = movie.kinopoiskId || movie.filmId;
