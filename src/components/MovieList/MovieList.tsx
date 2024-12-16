@@ -116,7 +116,7 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
                   xs: '100%',
                   sm: 'calc(50% - 24px)',
                   md: 'calc(33.333% - 24px)',
-                  lg: 'calc(25% - 24px)',
+                  lg: 'calc(25% - 24px)', // 4 в ряд на больших экранах
                 },
               }}
             >
@@ -140,7 +140,8 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
                     alt={movie.nameRu}
                     sx={{
                       height: 300,
-                      objectFit: 'cover',
+                      objectFit: 'contain',
+                      bgcolor: '#000', // тёмный фон за постером
                     }}
                   />
                 )}

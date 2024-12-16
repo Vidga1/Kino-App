@@ -102,8 +102,6 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
 
   return (
     <Box sx={{ width: '100%', mt: 2 }}>
-      {/* Разметка для 4 в ряд (как было с Grid lg={3}) */}
-      {/* xs: 1 в ряд, sm: 2, md: 3, lg: 4 */}
       <Box
         sx={{
           display: 'flex',
@@ -156,7 +154,8 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
                     alt={movie.nameRu}
                     sx={{
                       height: 300,
-                      objectFit: 'cover', // вернуть как было, "cover" вместо "contain"
+                      objectFit: 'contain',
+                      bgcolor: '#000', // тёмный фон под постером
                     }}
                   />
                 )}
