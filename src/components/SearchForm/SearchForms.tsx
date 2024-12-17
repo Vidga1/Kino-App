@@ -21,29 +21,6 @@ import {
   Stack,
 } from '@mui/material';
 
-interface Country {
-  id: string;
-  country: string;
-}
-
-interface Genre {
-  id: string;
-  genre: string;
-}
-
-interface FilterOptions {
-  countries: Country[];
-  genres: Genre[];
-}
-
-interface SearchFilterFormProps {
-  onSearchResults: (
-    movies: Movie[],
-    pagesCount: number,
-    filters: Record<string, string>,
-  ) => void;
-}
-
 const SearchForms: React.FC<SearchFilterFormProps> = ({ onSearchResults }) => {
   const navigate = useNavigate();
   const [countries, setCountries] = useState<Country[]>([]);

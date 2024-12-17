@@ -1,5 +1,3 @@
-// src/components/SelectedMoviesList/SelectedMoviesList.tsx
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/UseAuth';
 import { db } from '../../firebase/firebaseConfig';

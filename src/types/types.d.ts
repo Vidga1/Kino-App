@@ -1,5 +1,3 @@
-// src/types/Movie.d.ts
-
 interface Country {
   id: string;
   country: string;
@@ -28,7 +26,6 @@ interface MovieDetails extends Movie {
   posterUrl: string;
   filmLength?: number;
   webUrl?: string;
-  // Дополнительные свойства, если есть
 }
 
 type MovieSelect = {
@@ -136,4 +133,17 @@ interface AuthContextType {
 
 interface AuthProviderProps {
   children: ReactNode;
+}
+
+interface FilterOptions {
+  countries: Country[];
+  genres: Genre[];
+}
+
+interface SearchFilterFormProps {
+  onSearchResults: (
+    movies: Movie[],
+    pagesCount: number,
+    filters: Record<string, string>,
+  ) => void;
 }
