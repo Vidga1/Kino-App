@@ -11,38 +11,6 @@ import {
   Box,
 } from '@mui/material';
 
-interface Country {
-  id: string;
-  country: string;
-}
-
-interface Genre {
-  id: string;
-  genre: string;
-}
-
-interface MovieDetails {
-  filmId: number;
-  kinopoiskId?: number;
-  nameRu: string;
-  description: string;
-  year: string;
-  posterUrl: string;
-  posterUrlPreview?: string;
-  countries: Country[];
-  genres: Genre[];
-  rating: number;
-  filmLength?: number;
-  webUrl?: string;
-  ratingKinopoisk?: number;
-}
-
-interface ModalProps {
-  movie: MovieDetails;
-  onClose: () => void;
-  isModalOpen: boolean;
-}
-
 const Modal: React.FC<ModalProps> = ({ movie, onClose, isModalOpen }) => {
   return (
     <Dialog

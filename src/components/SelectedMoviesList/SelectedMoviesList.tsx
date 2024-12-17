@@ -1,43 +1,17 @@
+// src/components/SelectedMoviesList/SelectedMoviesList.tsx
+
 import React, { useState, useEffect } from 'react';
-import { getClassByRate } from '../../helpers/getClassByRate';
 import { useAuth } from '../../hooks/UseAuth';
 import { db } from '../../firebase/firebaseConfig';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import {
-  Box,
-  Card,
-  CardMedia,
-  CardContent,
-  Typography,
-  Button,
-  Chip,
-  Link,
-} from '@mui/material';
-
-interface MovieSelect {
-  normalizedRating: React.ReactNode;
-  ratingKinopoisk: number;
-  ratingImdb: number;
-  kinopoiskId?: number;
-  filmId?: number;
-  nameRu?: string;
-  posterUrlPreview?: string;
-  year?: string;
-  countries?: Array<{ country: string }>;
-  genres?: Array<{ genre: string }>;
-  rating?: string;
-}
-
-interface SelectedMoviesListProps {
-  currentPage: number;
-  moviesPerPage: number;
-}
+import { Box } from '@mui/material';
+import MovieCard from '../MovieCard/MovieCard';
 
 const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
   currentPage,
   moviesPerPage,
 }) => {
-  const [selectedMovies, setSelectedMovies] = useState<MovieSelect[]>([]);
+  const [selectedMovies, setSelectedMovies] = useState<Movie[]>([]);
   const { currentUser } = useAuth();
 
   useEffect(() => {
@@ -49,27 +23,23 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
 
       if (docSnap.exists()) {
         const data = docSnap.data();
-        const loadedMovies: MovieSelect[] = Object.entries(
-          data.movies || {},
-        ).map(([key, movie]) => {
-          const typedMovie = movie as Partial<MovieSelect>;
-          return {
-            ...typedMovie,
-            ratingKinopoisk: typedMovie.ratingKinopoisk || 0,
-            ratingImdb: typedMovie.ratingImdb || 0,
-            kinopoiskId: typedMovie.kinopoiskId || parseInt(key, 10),
-            filmId: typedMovie.filmId || parseInt(key, 10),
-            normalizedRating: getClassByRate(
-              typedMovie.ratingKinopoisk || typedMovie.rating || 'Н/Д',
-            ),
-            nameRu: typedMovie.nameRu || '',
-            posterUrlPreview: typedMovie.posterUrlPreview || '',
-            year: typedMovie.year || '',
-            countries: typedMovie.countries || [],
-            genres: typedMovie.genres || [],
-            rating: typedMovie.rating || '',
-          };
-        });
+        const loadedMovies: Movie[] = Object.entries(data.movies || {}).map(
+          ([key, movie]) => {
+            const typedMovie = movie as Partial<Movie>;
+            return {
+              ratingKinopoisk: typedMovie.ratingKinopoisk || 0,
+              ratingImdb: typedMovie.ratingImdb || 0,
+              kinopoiskId: typedMovie.kinopoiskId || parseInt(key, 10),
+              filmId: typedMovie.filmId || parseInt(key, 10),
+              nameRu: typedMovie.nameRu || '',
+              posterUrlPreview: typedMovie.posterUrlPreview || '',
+              year: typedMovie.year || '',
+              countries: typedMovie.countries || [],
+              genres: typedMovie.genres || [],
+              rating: typedMovie.rating || 'Н/Д',
+            };
+          },
+        );
 
         const startIndex = (currentPage - 1) * moviesPerPage;
         const endIndex = startIndex + moviesPerPage;
@@ -109,142 +79,16 @@ const SelectedMoviesList: React.FC<SelectedMoviesListProps> = ({
           gap: 3,
         }}
       >
-        {selectedMovies.map((movie) => {
-          const ratingValue = movie.ratingKinopoisk || movie.rating || 'Н/Д';
-          let ratingColor: 'success' | 'warning' | 'error' | 'default' =
-            'default';
-          let chipStyles: React.CSSProperties = {
-            position: 'absolute',
-            top: 8,
-            left: 8,
-            fontWeight: 'bold',
-          };
-
-          if (ratingValue !== 'Н/Д') {
-            const numericRating = Number(ratingValue);
-            if (!isNaN(numericRating)) {
-              if (numericRating >= 7) ratingColor = 'success';
-              else if (numericRating >= 5) ratingColor = 'warning';
-              else ratingColor = 'error';
-            }
-          } else {
-            ratingColor = 'default';
-            chipStyles = {
-              ...chipStyles,
-              backgroundColor: '#fff',
-              color: '#000',
-            };
-          }
-
-          return (
-            <Box
-              key={movie.kinopoiskId || movie.filmId}
-              sx={{
-                width: {
-                  xs: '100%',
-                  sm: 'calc(50% - 24px)',
-                  md: 'calc(33.333% - 24px)',
-                  lg: 'calc(25% - 24px)',
-                },
-              }}
-            >
-              <Card
-                sx={{
-                  bgcolor: '#2d3748',
-                  color: '#ffffff',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  height: '100%',
-                  position: 'relative',
-                  '&:hover': {
-                    boxShadow: 6,
-                  },
-                }}
-              >
-                {movie.posterUrlPreview && (
-                  <CardMedia
-                    component="img"
-                    image={movie.posterUrlPreview}
-                    alt={movie.nameRu}
-                    sx={{
-                      height: 300,
-                      objectFit: 'contain',
-                      bgcolor: '#000',
-                    }}
-                  />
-                )}
-
-                <Chip
-                  label={`Рейтинг: ${ratingValue}`}
-                  color={ratingColor}
-                  variant="filled"
-                  style={chipStyles}
-                />
-
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() =>
-                    handleMovieRemove(movie.kinopoiskId ?? movie.filmId)
-                  }
-                  sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    backgroundColor: '#e53e3e',
-                    '&:hover': {
-                      backgroundColor: '#c53030',
-                    },
-                    backdropFilter: 'blur(4px)',
-                  }}
-                >
-                  ✕
-                </Button>
-
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography variant="h6" component="div" sx={{ mb: 1 }}>
-                    {movie.nameRu}
-                  </Typography>
-                  <Typography variant="body2" color="#cbd5e0" sx={{ mb: 0.5 }}>
-                    {movie.countries?.map((c) => c.country).join(', ') ||
-                      'Неизвестно'}{' '}
-                    - {movie.year}
-                  </Typography>
-                  <Typography variant="body2" color="#a0aec0" sx={{ mb: 1 }}>
-                    Жанры:{' '}
-                    {movie.genres?.map((g) => g.genre).join(', ') ||
-                      'Неизвестно'}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      mb: 1,
-                    }}
-                  >
-                    <Link
-                      href={`https://kinopoisk.ru/film/${movie.kinopoiskId || movie.filmId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      underline="none"
-                      sx={{
-                        color: '#4299e1',
-                        '&:hover': {
-                          textDecoration: 'underline',
-                        },
-                      }}
-                    >
-                      <Button variant="outlined" color="primary">
-                        Смотреть
-                      </Button>
-                    </Link>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Box>
-          );
-        })}
+        {selectedMovies.map((movie) => (
+          <MovieCard
+            key={movie.kinopoiskId || movie.filmId}
+            movie={movie}
+            isSelected={true}
+            onRemove={handleMovieRemove}
+            showWatchButton={true}
+            onMovieSelect={() => {}}
+          />
+        ))}
       </Box>
     </Box>
   );

@@ -1,3 +1,5 @@
+// src/types/Movie.d.ts
+
 interface Country {
   id: string;
   country: string;
@@ -10,6 +12,7 @@ interface Genre {
 
 interface Movie {
   ratingKinopoisk: number;
+  ratingImdb?: number; // Опциональное свойство
   filmId: number;
   kinopoiskId?: number;
   nameRu: string;
@@ -17,11 +20,19 @@ interface Movie {
   year: string;
   countries: Country[];
   genres: Genre[];
-  rating: number;
+  rating: number | string; // Позволяет 'Н/Д' или другие строковые значения
+}
+
+interface MovieDetails extends Movie {
+  description: string;
+  posterUrl: string;
+  filmLength?: number;
+  webUrl?: string;
+  // Дополнительные свойства, если есть
 }
 
 type MovieSelect = {
-  normalizedRating: ReactNode;
+  normalizedRating: React.ReactNode;
   ratingKinopoisk: number;
   ratingImdb: number;
   kinopoiskId?: number;
@@ -33,14 +44,6 @@ type MovieSelect = {
   genres?: Array<{ genre: string }>;
   rating?: string;
 };
-
-interface MovieDetails extends Movie {
-  description: string;
-  posterUrl: string;
-  filmLength?: number;
-  webUrl?: string;
-  ratingKinopoisk?: number;
-}
 
 interface MovieListProps {
   movies: Movie[];
@@ -108,3 +111,29 @@ interface Filters {
 type SelectedMovies = {
   [key: string]: Movie;
 };
+
+interface SelectedMoviesListProps {
+  currentPage: number;
+  moviesPerPage: number;
+}
+
+interface MovieCardProps {
+  movie: Movie;
+  isSelected: boolean;
+  onToggleSelect?: (movie: Movie) => Promise<void>;
+  onRemove?: (movieId: number) => Promise<void>;
+  onMovieSelect?: (movie: Movie) => void;
+  showWatchButton?: boolean;
+}
+
+interface AuthFormProps {
+  mode: 'login' | 'signup';
+}
+
+interface AuthContextType {
+  currentUser: User | null;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+}

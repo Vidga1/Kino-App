@@ -11,10 +11,6 @@ import {
   Link,
 } from '@mui/material';
 
-interface AuthFormProps {
-  mode: 'login' | 'signup';
-}
-
 const Form: FC<AuthFormProps> = ({ mode }) => {
   const navigate = useNavigate();
   const isLogin = mode === 'login';
