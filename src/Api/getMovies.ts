@@ -49,6 +49,7 @@ export const fetchMovieDetails = async (
       rating: movieDetailsData.rating || 0,
       filmLength: movieDetailsData.filmLength,
       webUrl: movieDetailsData.webUrl,
+      ratingKinopoisk: 0,
     };
 
     return movieDetails;

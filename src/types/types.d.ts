@@ -12,7 +12,7 @@ interface Genre {
 
 interface Movie {
   ratingKinopoisk: number;
-  ratingImdb?: number; // Опциональное свойство
+  ratingImdb?: number;
   filmId: number;
   kinopoiskId?: number;
   nameRu: string;
@@ -20,7 +20,7 @@ interface Movie {
   year: string;
   countries: Country[];
   genres: Genre[];
-  rating: number | string; // Позволяет 'Н/Д' или другие строковые значения
+  rating: number | string;
 }
 
 interface MovieDetails extends Movie {
