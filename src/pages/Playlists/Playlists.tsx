@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SelectedMoviesList from '../../components/SelectedMoviesList/SelectedMoviesList';
 import Pagination from '../../components/Pagination/Pagination';
 import { useAuth } from '../../hooks/UseAuth';
-import { db } from '../../firebase/firebaseConfig';
+import { db } from '../../api/firebase/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 
 const PlaylistsPage: React.FC = () => {

@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { login, createUser } from '../../firebase/authorization';
+import { login, createUser } from '../../api/firebase/authorization';
 import {
   Container,
   Box,

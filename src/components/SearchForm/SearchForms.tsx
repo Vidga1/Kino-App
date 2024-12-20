@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { loadFilterOptions } from '../../Api/loadFilter';
+import { loadFilterOptions } from '../../api/kinopoisk/loadFilter';
 import {
   fetchMoviesByTitle,
   fetchMoviesByFilters,
-} from '../../Api/searchMovies';
+} from '../../api/kinopoisk/searchMovies';
 import { useNavigate } from 'react-router-dom';
 import { resetFilters } from '../../helpers/resetFilters';
 import {

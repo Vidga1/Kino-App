@@ -1,4 +1,4 @@
-import { API_KEY, API_URL_POPULAR, API_URL_MOVIE_DETAILS } from './URL_KEY';
+import { API_URL_POPULAR, API_URL_MOVIE_DETAILS } from './constants';
 
 export const fetchMovies = async (
   page: number = 1,
@@ -7,7 +7,7 @@ export const fetchMovies = async (
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
-      'X-API-KEY': API_KEY,
+      'X-API-KEY': process.env.REACT_APP_KINOPOISK_API_KEY!,
     },
   });
   if (!response.ok) {
@@ -28,7 +28,7 @@ export const fetchMovieDetails = async (
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY,
+        'X-API-KEY': process.env.REACT_APP_KINOPOISK_API_KEY!,
       },
     });
     if (!response.ok) {

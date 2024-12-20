@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/UseAuth';
-import { db } from '../../firebase/firebaseConfig';
+import { db } from '../../api/firebase/firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { Box } from '@mui/material';
 import MovieCard from '../MovieCard/MovieCard';

@@ -3,12 +3,12 @@ import { useLocation } from 'react-router-dom';
 import {
   fetchMoviesByTitle,
   fetchMoviesByFilters,
-} from '../../Api/searchMovies';
+} from '../../api/kinopoisk/searchMovies';
 import SearchForms from '../../components/SearchForm/SearchForms';
 import MovieList from '../../components/MovieList/MovieList';
 import Modal from '../../components/Modal/Modal';
 import Pagination from '../../components/Pagination/Pagination';
-import { fetchMovieDetails, fetchMovies } from '../../Api/getMovies';
+import { fetchMovieDetails, fetchMovies } from '../../api/kinopoisk/getMovies';
 
 function deduplicateMovies(films: Movie[]): Movie[] {
   const seen = new Set<number>();

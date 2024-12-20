@@ -6,7 +6,7 @@ import React, {
   ReactNode,
 } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
-import { app } from '../firebase/firebaseConfig';
+import { app } from '../api/firebase/firebaseConfig';
 
 interface AuthContextType {
   currentUser: User | null;

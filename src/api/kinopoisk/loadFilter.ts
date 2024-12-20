@@ -1,11 +1,11 @@
-import { API_KEY, API_URL_FILTER } from './URL_KEY';
+import { API_URL_FILTER } from './constants';
 
 export async function loadFilterOptions() {
   try {
     const response = await fetch(`${API_URL_FILTER}/filters`, {
       headers: {
         'Content-Type': 'application/json',
-        'X-API-KEY': API_KEY,
+        'X-API-KEY': process.env.REACT_APP_KINOPOISK_API_KEY!,
       },
     });
 

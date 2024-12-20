@@ -1,11 +1,11 @@
-import { API_KEY, API_URL_SEARCH_NAME, API_URL_SEARCH_FILTER } from './URL_KEY';
+import { API_URL_SEARCH_NAME, API_URL_SEARCH_FILTER } from './constants';
 
 export const fetchMoviesByTitle = async (title: string, page = 1) => {
   const url = `${API_URL_SEARCH_NAME}${encodeURIComponent(title)}&page=${page}`;
   const response = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
-      'X-API-KEY': API_KEY,
+      'X-API-KEY': process.env.REACT_APP_KINOPOISK_API_KEY!,
     },
   });
   if (!response.ok) {
@@ -36,7 +36,7 @@ export const fetchMoviesByFilters = async (filters: Filters, page = 1) => {
   const response = await fetch(url.toString(), {
     headers: {
       'Content-Type': 'application/json',
-      'X-API-KEY': API_KEY,
+      'X-API-KEY': process.env.REACT_APP_KINOPOISK_API_KEY!,
     },
   });
 
