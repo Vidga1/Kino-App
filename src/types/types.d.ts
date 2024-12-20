@@ -10,6 +10,7 @@ interface Genre {
 
 interface Movie {
   ratingKinopoisk: number;
+  ratingImdb?: number;
   filmId: number;
   kinopoiskId?: number;
   nameRu: string;
@@ -17,11 +18,18 @@ interface Movie {
   year: string;
   countries: Country[];
   genres: Genre[];
-  rating: number;
+  rating: number | string;
+}
+
+interface MovieDetails extends Movie {
+  description: string;
+  posterUrl: string;
+  filmLength?: number;
+  webUrl?: string;
 }
 
 type MovieSelect = {
-  normalizedRating: ReactNode;
+  normalizedRating: React.ReactNode;
   ratingKinopoisk: number;
   ratingImdb: number;
   kinopoiskId?: number;
@@ -33,14 +41,6 @@ type MovieSelect = {
   genres?: Array<{ genre: string }>;
   rating?: string;
 };
-
-interface MovieDetails extends Movie {
-  description: string;
-  posterUrl: string;
-  filmLength?: number;
-  webUrl?: string;
-  ratingKinopoisk?: number;
-}
 
 interface MovieListProps {
   movies: Movie[];
@@ -108,3 +108,60 @@ interface Filters {
 type SelectedMovies = {
   [key: string]: Movie;
 };
+
+interface SelectedMoviesListProps {
+  currentPage: number;
+  moviesPerPage: number;
+}
+
+interface MovieCardProps {
+  movie: Movie;
+  isSelected: boolean;
+  onToggleSelect?: (movie: Movie) => Promise<void>;
+  onRemove?: (movieId: number) => Promise<void>;
+  onMovieSelect?: (movie: Movie) => void;
+  showWatchButton?: boolean;
+}
+
+interface AuthFormProps {
+  mode: 'login' | 'signup';
+}
+
+interface AuthContextType {
+  currentUser: User | null;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+interface FilterOptions {
+  countries: Country[];
+  genres: Genre[];
+}
+
+interface SearchFilterFormProps {
+  onSearchResults: (
+    movies: Movie[],
+    pagesCount: number,
+    filters: Record<string, string>,
+  ) => void;
+}
+
+declare namespace NodeJS {
+  interface ProcessEnv {
+    // Kinopoisk API
+    readonly REACT_APP_KINOPOISK_API_KEY: string;
+
+    // Firebase API
+    readonly REACT_APP_FIREBASE_API_KEY: string;
+    readonly REACT_APP_AUTH_DOMAIN: string;
+    readonly REACT_APP_PROJECT_ID: string;
+    readonly REACT_APP_STORAGE_BUCKET: string;
+    readonly REACT_APP_MESSAGING_SENDER_ID: string;
+    readonly REACT_APP_APP_ID: string;
+
+    // Node Environment
+    readonly NODE_ENV?: 'development' | 'production' | 'test';
+  }
+}

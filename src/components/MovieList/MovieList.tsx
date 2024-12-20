@@ -1,27 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { getClassByRate } from '../../helpers/getClassByRate';
 import { useAuth } from '../../hooks/UseAuth';
-import { db } from '../../firebase/firebaseConfig';
+import { db } from '../../api/firebase/firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import '../../styles/MovieList.css';
+import { Box } from '@mui/material';
+import MovieCard from '../MovieCard/MovieCard';
 
 const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
   const { currentUser } = useAuth();
   const [selectedMovies, setSelectedMovies] = useState<SelectedMovies>({});
 
   useEffect(() => {
-    async function loadSelectedMovies() {
+    const loadSelectedMovies = async () => {
       if (currentUser) {
-        const userDocRef = doc(db, 'selectedMovies', currentUser.uid);
-        const docSnap = await getDoc(userDocRef);
+        try {
+          const userDocRef = doc(db, 'selectedMovies', currentUser.uid);
+          const docSnap = await getDoc(userDocRef);
 
-        if (docSnap.exists() && docSnap.data().movies) {
-          setSelectedMovies(docSnap.data().movies);
-        } else {
-          console.log('No saved movies');
+          if (docSnap.exists() && docSnap.data().movies) {
+            setSelectedMovies(docSnap.data().movies);
+          } else {
+            console.log('No saved movies');
+          }
+        } catch (error) {
+          console.error('Error loading selected movies:', error);
         }
       }
-    }
+    };
 
     loadSelectedMovies();
   }, [currentUser]);
@@ -40,56 +44,37 @@ const MovieList: React.FC<MovieListProps> = ({ movies, onMovieSelect }) => {
 
     setSelectedMovies(updatedSelectedMovies);
 
-    const userDocRef = doc(db, 'selectedMovies', currentUser.uid);
-    await setDoc(userDocRef, { movies: updatedSelectedMovies });
+    try {
+      const userDocRef = doc(db, 'selectedMovies', currentUser.uid);
+      await setDoc(userDocRef, { movies: updatedSelectedMovies });
+    } catch (error) {
+      console.error('Error updating selected movies:', error);
+    }
   };
 
   return (
-    <div className="movies">
-      {movies.map((movie) => {
-        const rating = movie.ratingKinopoisk || movie.rating || 'Н/Д';
-        const isSelected = selectedMovies[movie.kinopoiskId || movie.filmId];
-        const buttonSymbol = isSelected ? '✔' : '+';
-
-        return (
-          <div key={movie.kinopoiskId || movie.filmId} className="movie">
-            <div className="movie__cover-inner">
-              <img
-                src={movie.posterUrlPreview}
-                className="movie__cover"
-                alt={movie.nameRu}
-              />
-              <button
-                className="movie__select-button"
-                onClick={() => toggleMovieSelection(movie)}
-              >
-                {buttonSymbol}
-              </button>
-            </div>
-            <div className="movie__info">
-              <div
-                className="movie__title"
-                onClick={() => onMovieSelect(movie)}
-              >
-                {movie.nameRu}
-              </div>
-              <div className="movie__details">
-                {movie.countries.map((c) => c.country).join(', ')} -{' '}
-                {movie.year}
-              </div>
-              <div className="movie__category">
-                {movie.genres.map((g) => g.genre).join(', ')}
-              </div>
-              <div
-                className={`movie__average movie__average--${getClassByRate(rating)}`}
-              >
-                {rating}
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
+    <Box sx={{ width: '100%', mt: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 3,
+        }}
+      >
+        {movies.map((movie) => {
+          const isSelected = selectedMovies[movie.kinopoiskId || movie.filmId];
+          return (
+            <MovieCard
+              key={movie.kinopoiskId || movie.filmId}
+              movie={movie}
+              isSelected={!!isSelected}
+              onToggleSelect={toggleMovieSelection}
+              onMovieSelect={onMovieSelect}
+            />
+          );
+        })}
+      </Box>
+    </Box>
   );
 };
 

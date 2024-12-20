@@ -1,45 +1,94 @@
 import React from 'react';
-import '../../styles/Modal.css';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  CardMedia,
+  Link,
+  Box,
+} from '@mui/material';
 
 const Modal: React.FC<ModalProps> = ({ movie, onClose, isModalOpen }) => {
   return (
-    <div className={`modal ${isModalOpen ? 'modal--show' : ''}`}>
-      <div className="modal__card">
-        <img
-          className="modal__movie-backdrop"
-          src={movie.posterUrl}
-          alt={movie.nameRu}
-        />
-        <h2>
-          <span className="modal__movie-title">{movie.nameRu}</span>
-          <span className="modal__movie-release-year"> - {movie.year}</span>
-        </h2>
-        <ul className="modal__movie-info">
-          <li className="modal__movie-genre">
-            Жанр - {movie.genres.map((el) => el.genre).join(', ')}
-          </li>
-          {movie.filmLength && (
-            <li className="modal__movie-runtime">
-              Время - {movie.filmLength} минут
-            </li>
+    <Dialog
+      open={isModalOpen}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      sx={{
+        '& .MuiDialog-paper': {
+          bgcolor: '#2d3748',
+          color: '#ffffff',
+        },
+      }}
+    >
+      <DialogTitle>
+        <Typography variant="h6" component="div">
+          {movie.nameRu}{' '}
+          <Typography component="span" color="#cbd5e0">
+            ({movie.year})
+          </Typography>
+        </Typography>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 2,
+          }}
+        >
+          {movie.posterUrl && (
+            <CardMedia
+              component="img"
+              image={movie.posterUrl}
+              alt={movie.nameRu}
+              sx={{
+                width: { xs: '100%', md: '300px' },
+                height: 'auto',
+                borderRadius: 1,
+              }}
+            />
           )}
-          {movie.webUrl && (
-            <li>
-              Сайт:{' '}
-              <a className="modal__movie-site" href={movie.webUrl}>
-                {movie.webUrl}
-              </a>
-            </li>
-          )}
-          <li className="modal__movie-overview">
-            Описание - {movie.description}
-          </li>
-        </ul>
-        <button type="button" className="modal__button-close" onClick={onClose}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Typography variant="body1">
+              <strong>Жанр:</strong>{' '}
+              {movie.genres.map((g) => g.genre).join(', ')}
+            </Typography>
+            {movie.filmLength && (
+              <Typography variant="body1">
+                <strong>Время:</strong> {movie.filmLength} минут
+              </Typography>
+            )}
+            {movie.webUrl && (
+              <Typography variant="body1">
+                <strong>Сайт: </strong>
+                <Link
+                  href={movie.webUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  underline="hover"
+                  sx={{ color: '#63b3ed' }}
+                >
+                  {movie.webUrl}
+                </Link>
+              </Typography>
+            )}
+            <Typography variant="body1" sx={{ mt: 1 }}>
+              <strong>Описание:</strong> {movie.description}
+            </Typography>
+          </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" color="primary" onClick={onClose}>
           Закрыть
-        </button>
-      </div>
-    </div>
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

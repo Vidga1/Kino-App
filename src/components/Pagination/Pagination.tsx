@@ -1,41 +1,51 @@
 import React from 'react';
-import '../../styles/Pagination.css';
+import { Pagination as MuiPagination, Box } from '@mui/material';
+
+interface PaginationProps {
+  totalPages: number;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}
 
 const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   currentPage,
   onPageChange,
 }) => {
-  const pageNumbers = [];
-  const range = 3;
-  const startPage = Math.max(1, currentPage - range);
-  const endPage = Math.min(totalPages, currentPage + range);
-
-  for (let i = startPage; i <= endPage; i++) {
-    pageNumbers.push(i);
-  }
+  const handleChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    onPageChange(page);
+  };
 
   return (
-    <nav className="pagination">
-      <ul className="pagination__list">
-        {pageNumbers.map((number) => (
-          <li
-            key={number}
-            className={`pagination__item ${currentPage === number ? 'pagination__item--active' : ''}`}
-          >
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                onPageChange(number);
-              }}
-            >
-              {number}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        mt: 2,
+      }}
+    >
+      <MuiPagination
+        count={totalPages}
+        page={currentPage}
+        onChange={handleChange}
+        variant="outlined"
+        shape="rounded"
+        sx={{
+          '& .MuiPaginationItem-root': {
+            color: '#fff',
+            borderColor: '#ffffff44',
+          },
+          '& .Mui-selected': {
+            backgroundColor: '#2f855a !important',
+            borderColor: '#2f855a',
+            color: '#ffffff',
+          },
+          '& .MuiPaginationItem-ellipsis': {
+            borderColor: 'transparent',
+          },
+        }}
+      />
+    </Box>
   );
 };
 
